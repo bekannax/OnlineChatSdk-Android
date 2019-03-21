@@ -39,23 +39,60 @@ public class MyActivity extends ChatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_view);
+
+        ChatView chatView = getChatView();
+        if (chatView != null) {
+            //
+        }
     }
 }
 ```
 
 ## События
- * **operatorSendMessage** - оператор отправил сообщение посетителю
- * **clientSendMessage**
- * **clientMakeSubscribe**
- * **contactsUpdated**
- * **sendRate**
+ * **operatorSendMessage** - оператор отправил сообщение посетителю.
+ * **clientSendMessage** - посетитель отправил сообщение оператору.
+ * **clientMakeSubscribe** - посетитель заполнил форму.
+ * **contactsUpdated** - посетитель обновил информацию о себе.
+ * **sendRate** - посетитель отправил новый отзыв.
+ 
+ ```java
+chatView.setListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+        switch (name) {
+            case ChatView.event_operatorSendMessage:
+                break;
+            case ChatView.event_clientSendMessage:
+                break;
+            case ChatView.event_clientMakeSubscribe:
+                break;
+            case ChatView.event_contactsUpdated:
+                break;
+            case ChatView.event_sendRate:
+                break;
+        }
+    }
+});
+```
+
+ ```java
+chatView.setOperatorSendMessageListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+```
 
 ## Методы
- * **setClientInfo**
- * **setTarget**
- * **openSupport**
- * **openReviewsTab**
- * **openTab**
- * **sendMessage**
- * **receiveMessage**
- * **setOperator**
+ * **setClientInfo** - изменение информации о посетителе.
+ * **setTarget** - пометить посетителя целевым.
+ * **openReviewsTab** - отобразить форму для отзыва.
+ * **openTab** - отобразить необходимую вкладку.
+ * **sendMessage** - отправка сообщения от имени клиента.
+ * **receiveMessage** - отправка сообщения от имени оператора.
+ * **setOperator** - выбор любого оператора.
+
+```java
+chatView.callOpenTab(1);
+```
