@@ -13,12 +13,11 @@ buildscript {
     }
 }
 ```
-## Пример использования
-
-### Получение id
-Перейдите в «Настройки - Установка», в нашем личном кабинете.
+## Получение id
+Перейдите в раздел «Настройки - Установка» и скопируйте значение переменной id.
 ![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png)
 
+## Пример использования
 ```xml
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
@@ -32,8 +31,10 @@ buildscript {
         app:domain="<Домен вашего сайта>" />
 </android.support.constraint.ConstraintLayout>
  ```
+ 
 ```java
-public class ChatViewerActivity extends ChatActivity {
+public class MyActivity extends ChatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,20 @@ public class ChatViewerActivity extends ChatActivity {
     }
 }
 ```
+
 ## События
+ * **operatorSendMessage** - оператор отправил сообщение посетителю
+ * **clientSendMessage**
+ * **clientMakeSubscribe**
+ * **contactsUpdated**
+ * **sendRate**
 
 ## Методы
+ * **setClientInfo**
+ * **setTarget**
+ * **openSupport**
+ * **openReviewsTab**
+ * **openTab**
+ * **sendMessage**
+ * **receiveMessage**
+ * **setOperator**
