@@ -21,19 +21,21 @@ public class ChatView extends WebView implements ChatListener {
     public static final String event_clientMakeSubscribe = "clientMakeSubscribe";
     public static final String event_contactsUpdated = "contactsUpdated";
     public static final String event_sendRate = "sendRate";
+    public static final String event_clientId = "clientId";
 
     public static final String method_setClientInfo = "setClientInfo";
     public static final String method_setTarget = "setTarget";
-    public static final String method_openSupport = "openSupport";
     public static final String method_openReviewsTab = "openReviewsTab";
     public static final String method_openTab = "openTab";
     public static final String method_sendMessage = "sendMessage";
     public static final String method_receiveMessage = "receiveMessage";
     public static final String method_setOperator = "setOperator";
+    public static final String method_getContacts = "getContacts";
 
-    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s";
+    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
     private String id;
     private String domain;
+    private String language;
 
     private ChatListener listener;
     private ChatListener operatorSendMessageListener;
@@ -41,6 +43,9 @@ public class ChatView extends WebView implements ChatListener {
     private ChatListener clientMakeSubscribeListener;
     private ChatListener contactsUpdatedListener;
     private ChatListener sendRateListener;
+    private ChatListener clientIdListener;
+
+    private ChatListener getContactsCallback;
 
     private Context context;
     private ChatChromeClient chatChromeClient;
@@ -63,15 +68,64 @@ public class ChatView extends WebView implements ChatListener {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChatView);
         this.id = a.getString(R.styleable.ChatView_id);
         this.domain = a.getString(R.styleable.ChatView_domain);
-        this.load();
+        this.language = a.getString(R.styleable.ChatView_language);
+        if (a.getBoolean(R.styleable.ChatView_autoLoad, false)) {
+            this.load();
+        }
         a.recycle();
     }
 
+    private String getCallJsMethod(String methodName, Object... params) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("window.MeTalk('").append(methodName).append("'");
+        if (params != null && params.length > 0) {
+            for (Object p: params) {
+                builder.append(",");
+                if (p == null) {
+                    builder.append("null");
+                } else if (p instanceof Integer) {
+                    builder.append(Integer.valueOf(p.toString()));
+                } else if (p instanceof Long) {
+                    builder.append(Long.valueOf(p.toString()));
+                } else if (p instanceof Command) {
+                    builder.append(((Command)p).command);
+                } else {
+                    builder.append("'").append(p.toString()).append("'");
+                }
+            }
+        }
+        builder.append(");");
+        return builder.toString();
+    }
+
+    private String getSetup(String language, String clientId) {
+        StringBuilder setup = new StringBuilder();
+        if (language != null && !language.isEmpty()) {
+            setup.append("?setup={\"language\":\"").append(language).append("\"");
+        }
+        if (clientId != null && !clientId.isEmpty()) {
+            if (setup.length() > 0) {
+                setup.append(",");
+            } else {
+                setup.append("?setup={");
+            }
+            setup.append("\"clientId\"").append(":").append("\"").append(clientId).append("\"");
+        }
+        if (setup.length() > 0) {
+            setup.append("}");
+        }
+        return setup.toString();
+    }
+
     public void load() {
-        this.load(this.id, this.domain);
+        this.load(this.id, this.domain, this.language, "");
     }
 
     public void load(String id, String domain) {
+        this.load(id, domain, "", "");
+    }
+
+    public void load(String id, String domain, String language, String clientId) {
         if (id == null || domain == null || id.isEmpty() || domain.isEmpty()) {
             return;
         }
@@ -90,7 +144,7 @@ public class ChatView extends WebView implements ChatListener {
         this.chatChromeClient = new ChatChromeClient((Activity) this.context);
         this.setWebChromeClient(this.chatChromeClient);
 
-        this.loadUrl(String.format(this.loadUrl, id, domain));
+        this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
     }
 
     public void setListener(ChatListener listener) {
@@ -112,27 +166,6 @@ public class ChatView extends WebView implements ChatListener {
         this.callJs = null;
     }
 
-    private String getCallJsMethod(String methodName, Object... params) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("window.MeTalk('").append(methodName).append("'");
-        if (params != null && params.length > 0) {
-            for (Object p: params) {
-                builder.append(",");
-                if (p == null) {
-                    builder.append("null");
-                } else if (p instanceof Integer) {
-                    builder.append(Integer.valueOf(p.toString()));
-                } else if (p instanceof Long) {
-                    builder.append(Long.valueOf(p.toString()));
-                } else {
-                    builder.append("'").append(p.toString()).append("'");
-                }
-            }
-        }
-        builder.append(");");
-        return builder.toString();
-    }
-
     public void callJsMethod(String methodName, Object... params) {
         if (isFinished()) {
             this.callJs(this.getCallJsMethod(methodName, params));
@@ -144,36 +177,37 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
-    public void callSetClientInfo(String jsonInfo) {
+    public void callJsSetClientInfo(String jsonInfo) {
         this.callJsMethod(method_setClientInfo, jsonInfo);
     }
 
-    public void callSetTarget(String reason) {
+    public void callJsSetTarget(String reason) {
         this.callJsMethod(method_setTarget, reason);
     }
 
-    public void callOpenSupport() {
-        this.callJsMethod(method_openSupport);
-    }
-
-    public void callOpenReviewsTab() {
+    public void callJsOpenReviewsTab() {
         this.callJsMethod(method_openReviewsTab);
     }
 
-    public void callOpenTab(int index) {
+    public void callJsOpenTab(int index) {
         this.callJsMethod(method_openTab, index);
     }
 
-    public void callSendMessage(String text) {
+    public void callJsSendMessage(String text) {
         this.callJsMethod(method_sendMessage, text);
     }
 
-    public void callReceiveMessage(String text, String operator, Integer simulateTyping) {
+    public void callJsReceiveMessage(String text, String operator, Integer simulateTyping) {
         this.callJsMethod(method_receiveMessage, text, operator, simulateTyping);
     }
 
-    public void callSetOperator(String login) {
+    public void callJsSetOperator(String login) {
         this.callJsMethod(method_setOperator, login);
+    }
+
+    public void callJsGetContacts(ChatListener callback) {
+        this.getContactsCallback = callback;
+        this.callJsMethod(method_getContacts, new Command("window.getContactsCallback"));
     }
 
     public boolean isFinished() {
@@ -202,6 +236,10 @@ public class ChatView extends WebView implements ChatListener {
 
     public void setSendRateListener(ChatListener listener) {
         this.sendRateListener = listener;
+    }
+
+    public void setClientId(ChatListener listener) {
+        this.clientIdListener = listener;
     }
 
     public void onReceiveValue(Uri uri) {
@@ -261,6 +299,17 @@ public class ChatView extends WebView implements ChatListener {
             case event_sendRate:
                 if (this.sendRateListener != null) {
                     this.sendRateListener.onEvent(name, data);
+                }
+                break;
+            case event_clientId:
+                if (this.clientIdListener != null) {
+                    this.clientIdListener.onEvent(name, data);
+                }
+                break;
+            case method_getContacts:
+                if (this.getContactsCallback != null) {
+                    this.getContactsCallback.onEvent(name, data);
+                    this.getContactsCallback = null;
                 }
                 break;
         }

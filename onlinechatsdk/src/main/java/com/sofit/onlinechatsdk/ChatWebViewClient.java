@@ -3,6 +3,7 @@ package com.sofit.onlinechatsdk;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,6 +18,7 @@ class ChatWebViewClient extends WebViewClient {
         this.chat = chat;
     }
 
+    @RequiresApi(21)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (this.parent == null) {
