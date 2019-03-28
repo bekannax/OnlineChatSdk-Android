@@ -18,7 +18,7 @@ buildscript {
 ![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png)
 
 ## Пример использования
-Создайте `layout` с нашим `ChatView`.
+Создайте `layout` с нашим `ChatView`. Создайте `Activity`, которая наследует `ChatActivity`.
 ```xml
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
