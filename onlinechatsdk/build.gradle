@@ -31,7 +31,7 @@ dependencies {
 //    groupId = 'com.github.bekannax'
 //    repoName = 'onlinechatsdk'
 //    artifactId = 'onlinechatsdk'
-//    publishVersion = '0.0.2'
+//    publishVersion = '0.0.3'
 //    desc = 'A small library containing a wrapper for the WebView of Android.'
 //    licences = ['MIT']
 //    website = 'https://github.com/bekannax/OnlineChatSdk-Android'
