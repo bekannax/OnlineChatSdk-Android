@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        implementation 'com.github.bekannax:onlinechatsdk:0.0.1'
+        implementation 'com.github.bekannax:onlinechatsdk:0.0.2'
     }
 }
 ```
@@ -18,6 +18,7 @@ buildscript {
 ![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png)
 
 ## Пример использования
+Создайте `layout` с нашим `ChatView`.
 ```xml
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
@@ -28,10 +29,11 @@ buildscript {
         android:layout_height="match_parent"
         android:id="@+id/chatview"
         app:id="<Ваш id>"
-        app:domain="<Домен вашего сайта>" />
+        app:domain="<Домен вашего сайта>"
+        app:autoLoad="true" />
 </android.support.constraint.ConstraintLayout>
  ```
- 
+Если `autoLoad = true`, то при запуске `Activity` виджет автоматически загрузится, если `autoLoad = false`, то нужно использовать функцию **load()**.
 ```java
 public class MyActivity extends ChatActivity {
 
@@ -42,10 +44,14 @@ public class MyActivity extends ChatActivity {
 
         ChatView chatView = getChatView();
         if (chatView != null) {
-            //
+            chatView.load();
         }
     }
 }
+```
+Так же перед загрузкой можно указать **language** и **clientId**.
+```java
+chatView.setLanguage("en").setClientId("newId").load();
 ```
 
 ## События
@@ -54,8 +60,57 @@ public class MyActivity extends ChatActivity {
  * **clientMakeSubscribe** - посетитель заполнил форму.
  * **contactsUpdated** - посетитель обновил информацию о себе.
  * **sendRate** - посетитель отправил новый отзыв.
+ * **clientId** - уникальный идентификатор посетителя.
  
- ```java
+Для каждого события есть персональный `Listener`.
+
+```java
+chatView.setOnOperatorSendMessageListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+
+chatView.setOnClientSendMessageListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+
+chatView.setOnClientMakeSubscribeListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+
+chatView.setOnContactsUpdatedListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+
+chatView.setOnSendRateListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+
+chatView.setOnClientIdListener(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
+```
+ 
+Или можно задать один `Listener` на все события.
+ 
+```java
 chatView.setListener(new ChatListener() {
     @Override
     public void onEvent(String name, String data) {
@@ -70,16 +125,9 @@ chatView.setListener(new ChatListener() {
                 break;
             case ChatView.event_sendRate:
                 break;
+            case event_clientId:
+                break;
         }
-    }
-});
-```
-
- ```java
-chatView.setOperatorSendMessageListener(new ChatListener() {
-    @Override
-    public void onEvent(String name, String data) {
-
     }
 });
 ```
@@ -92,7 +140,28 @@ chatView.setOperatorSendMessageListener(new ChatListener() {
  * **sendMessage** - отправка сообщения от имени клиента.
  * **receiveMessage** - отправка сообщения от имени оператора.
  * **setOperator** - выбор любого оператора.
+ * **getContacts** - получение контактных данных.
 
 ```java
-chatView.callOpenTab(1);
+chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"");
+
+chatView.callJsSetTarget("reason");
+
+chatView.callJsOpenReviewsTab();
+
+chatView.callJsOpenTab(1);
+
+chatView.callJsSendMessage("Здравствуйте! У меня серьёзная проблема!");
+
+chatView.callJsReceiveMessage("Мы уже спешим на помощь ;)", null, 2000);
+
+chatView.callJsSetOperator("Логин оператора");
+
+chatView.callJsGetContacts(new ChatListener() {
+    @Override
+    public void onEvent(String name, String data) {
+
+    }
+});
 ```
+Подробней о работе методов можно прочесть в раздела «Интеграция и API - Javascript API».
