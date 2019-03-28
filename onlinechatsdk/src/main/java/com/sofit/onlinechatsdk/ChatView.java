@@ -256,27 +256,27 @@ public class ChatView extends WebView implements ChatListener {
         this.listener = listener;
     }
 
-    public void setOperatorSendMessageListener(ChatListener listener) {
+    public void setOnOperatorSendMessageListener(ChatListener listener) {
         this.operatorSendMessageListener = listener;
     }
 
-    public void setClientSendMessageListener(ChatListener listener) {
+    public void setOnClientSendMessageListener(ChatListener listener) {
         this.clientSendMessageListener = listener;
     }
 
-    public void setClientMakeSubscribeListener(ChatListener listener) {
+    public void setOnClientMakeSubscribeListener(ChatListener listener) {
         this.clientMakeSubscribeListener = listener;
     }
 
-    public void setContactsUpdatedListener(ChatListener listener) {
+    public void setOnContactsUpdatedListener(ChatListener listener) {
         this.contactsUpdatedListener = listener;
     }
 
-    public void setSendRateListener(ChatListener listener) {
+    public void setOnSendRateListener(ChatListener listener) {
         this.sendRateListener = listener;
     }
 
-    public void setClientId(ChatListener listener) {
+    public void setOnClientIdListener(ChatListener listener) {
         this.clientIdListener = listener;
     }
 
