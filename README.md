@@ -125,7 +125,7 @@ chatView.setListener(new ChatListener() {
                 break;
             case ChatView.event_sendRate:
                 break;
-            case event_clientId:
+            case ChatView.event_clientId:
                 break;
         }
     }
@@ -164,4 +164,4 @@ chatView.callJsGetContacts(new ChatListener() {
     }
 });
 ```
-Подробней о работе методов можно прочесть в раздела «Интеграция и API - Javascript API».
+Подробное описание методов можно прочесть в разделе «Интеграция и API - Javascript API».
