@@ -36,6 +36,7 @@ public class ChatView extends WebView implements ChatListener {
     private String id;
     private String domain;
     private String language;
+    private String clientId;
 
     private ChatListener listener;
     private ChatListener operatorSendMessageListener;
@@ -55,16 +56,25 @@ public class ChatView extends WebView implements ChatListener {
     public ChatView(Context context) {
         this(context, null);
         this.context = context;
+        if (this.context instanceof ChatActivity) {
+            ((ChatActivity) this.context).setChatView(this);
+        }
     }
 
     public ChatView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
         this.context = context;
+        if (this.context instanceof ChatActivity) {
+            ((ChatActivity) this.context).setChatView(this);
+        }
     }
 
     public ChatView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
+        if (this.context instanceof ChatActivity) {
+            ((ChatActivity) this.context).setChatView(this);
+        }
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChatView);
         this.id = a.getString(R.styleable.ChatView_id);
         this.domain = a.getString(R.styleable.ChatView_domain);
@@ -117,22 +127,10 @@ public class ChatView extends WebView implements ChatListener {
         return setup.toString();
     }
 
-    public void load() {
-        this.load(this.id, this.domain, this.language, "");
-    }
-
-    public void load(String id, String domain) {
-        this.load(id, domain, "", "");
-    }
-
-    public void load(String id, String domain, String language, String clientId) {
+    private void load(String id, String domain, String language, String clientId) {
         if (id == null || domain == null || id.isEmpty() || domain.isEmpty()) {
             return;
         }
-        if (this.context instanceof ChatActivity) {
-            ((ChatActivity) this.context).setChatView(this);
-        }
-
         WebSettings webSettings = this.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -147,8 +145,44 @@ public class ChatView extends WebView implements ChatListener {
         this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
     }
 
-    public void setListener(ChatListener listener) {
-        this.listener = listener;
+    public void load() {
+        this.load(this.id, this.domain, this.language, this.clientId);
+    }
+
+    public ChatView setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public ChatView setDomain(String domain) {
+        this.domain = domain;
+        return this;
+    }
+
+    public ChatView setLanguage(String language) {
+        this.language = language;
+        return this;
+    }
+
+    public ChatView setClientId(String clientId) {
+        this.clientId = clientId;
+        return this;
+    }
+
+    public String getID() {
+        return this.id;
+    }
+
+    public String getDomain() {
+        return this.domain;
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getClientId() {
+        return this.clientId;
     }
 
     public void callJs(String script){
@@ -216,6 +250,10 @@ public class ChatView extends WebView implements ChatListener {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public void setListener(ChatListener listener) {
+        this.listener = listener;
     }
 
     public void setOperatorSendMessageListener(ChatListener listener) {
