@@ -165,3 +165,18 @@ chatView.callJsGetContacts(new ChatListener() {
 });
 ```
 Подробное описание методов можно прочесть в разделе «Интеграция и API - Javascript API».
+
+## Получение token
+Перейдите в раздел «Интеграция и API - REST API», скопируйте существующий token или добавьте новый.
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-04-01_18-32-22.png)
+
+## ChatApi
+**getNewMessages** - получение новых сообщений от оператора.
+
+```java
+JSONObject data = ChatApi.getNewMessages("<TOKEN>", "<clientId>");
+if (data.length() > 0) {
+    // Есть новые сообщения от оператора
+}
+```
+Подробное описание можно прочесть в разделе «Интеграция и API - REST API - Инструкции по подключению».
