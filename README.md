@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        implementation 'com.github.bekannax:onlinechatsdk:0.0.4'
+        implementation 'com.github.bekannax:onlinechatsdk:0.0.6'
     }
 }
 ```

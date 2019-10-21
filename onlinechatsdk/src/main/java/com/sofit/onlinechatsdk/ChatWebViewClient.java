@@ -3,10 +3,11 @@ package com.sofit.onlinechatsdk;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.RequiresApi;
 
 class ChatWebViewClient extends WebViewClient {
 
