@@ -5,11 +5,11 @@
 buildscript {
     repositories {
         maven {
-            url 'https://dl.bintray.com/sofit/onlinechatsdk/'
+            url 'https://dl.bintray.com/ooosofit/OnlineChatSdk/'
         }
     }
     dependencies {
-        implementation 'com.github.bekannax:onlinechatsdk:0.0.6'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.0.7'
     }
 }
 ```
