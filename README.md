@@ -143,7 +143,7 @@ chatView.setListener(new ChatListener() {
  * **getContacts** - получение контактных данных.
 
 ```java
-chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"");
+chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"}");
 
 chatView.callJsSetTarget("reason");
 
