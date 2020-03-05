@@ -1,5 +1,4 @@
-# OnlineChatSdk-Android ![API](https://img.shields.io/badge/API-17%2B-brightgreen.svg?style=flat) [![Download](https://api.bintray.com/packages/sofit/onlinechatsdk/onlinechatsdk/images/download.svg) ](https://bintray.com/sofit/onlinechatsdk/onlinechatsdk/_latestVersion)
-
+# OnlineChatSdk-Android ![API](https://img.shields.io/badge/API-17%2B-brightgreen.svg?style=flat) [![Download](https://api.bintray.com/packages/ooosofit/OnlineChatSdk/OnlineChatSdk/images/download.svg) ](https://bintray.com/ooosofit/OnlineChatdk/OnlineChatSdk/_latestVersion)
 ## Добавление в проект
 ```groovy
 buildscript {
@@ -143,7 +142,7 @@ chatView.setListener(new ChatListener() {
  * **getContacts** - получение контактных данных.
 
 ```java
-chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"");
+chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"}");
 
 chatView.callJsSetTarget("reason");
 
