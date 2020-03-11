@@ -34,13 +34,4 @@ class ChatWebViewClient extends WebViewClient {
         }
         return true;
     }
-
-    @Override
-    public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        if (this.chat != null) {
-            this.chat.setFinished(true);
-            this.chat.callJs();
-        }
-    }
 }

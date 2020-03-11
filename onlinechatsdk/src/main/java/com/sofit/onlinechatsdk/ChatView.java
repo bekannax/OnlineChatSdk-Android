@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -141,7 +142,6 @@ public class ChatView extends WebView implements ChatListener {
         this.setWebViewClient(new ChatWebViewClient((Activity) this.context, this));
         this.chatChromeClient = new ChatChromeClient((Activity) this.context);
         this.setWebChromeClient(this.chatChromeClient);
-
         this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
     }
 
@@ -185,8 +185,13 @@ public class ChatView extends WebView implements ChatListener {
         return this.clientId;
     }
 
-    public void callJs(String script){
-        this.loadUrl(String.format("javascript:%s", script));
+    public void callJs(final String script) {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                loadUrl(String.format("javascript:%s", script));
+            }
+        });
     }
 
     public void callJs() {
@@ -212,7 +217,7 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void callJsSetClientInfo(String jsonInfo) {
-        this.callJsMethod(method_setClientInfo, jsonInfo);
+        this.callJsMethod(method_setClientInfo, new Command(jsonInfo));
     }
 
     public void callJsSetTarget(String reason) {
@@ -310,6 +315,10 @@ public class ChatView extends WebView implements ChatListener {
 
     @Override
     public void onEvent(String name, String data) {
+        if (!isFinished()) {
+            setFinished(true);
+            callJs();
+        }
         if (this.listener != null) {
             this.listener.onEvent(name, data);
         }
