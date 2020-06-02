@@ -8,12 +8,12 @@ buildscript {
         }
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.0.8'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.0.9'
     }
 }
 ```
 ## Получение id
-Перейдите в раздел «Настройки - Установка» и скопируйте значение переменной id. ![](https://bintray.com/ooosofit/OnlineChatdk/OnlineChatSdk/_latestVersion)
+Перейдите в раздел «Настройки - Установка» и скопируйте значение переменной id.
 ![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png)
 
 ## Пример использования
