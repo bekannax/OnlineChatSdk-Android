@@ -7,13 +7,15 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 @SuppressLint("SetJavaScriptEnabled")
 public class ChatView extends WebView implements ChatListener {
 
@@ -287,6 +289,7 @@ public class ChatView extends WebView implements ChatListener {
 
     public void onReceiveValue(Uri uri) {
         if (Build.VERSION.SDK_INT >= 26) {
+
             if (getWebChromeClient() != null) {
                 if (getWebChromeClient() instanceof ChatChromeClient) {
                     ((ChatChromeClient) getWebChromeClient()).onReceiveValue(uri);

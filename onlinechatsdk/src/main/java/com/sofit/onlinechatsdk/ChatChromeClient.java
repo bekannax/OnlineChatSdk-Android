@@ -38,6 +38,9 @@ class ChatChromeClient extends WebChromeClient {
 
     void onReceiveValue(Uri uri) {
         if (this.filePathCallback != null) {
+            if (uri == null) {
+                uri = Uri.parse("");
+            }
             this.filePathCallback.onReceiveValue(new Uri[]{uri});
         }
     }

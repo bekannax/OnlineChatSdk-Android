@@ -21,11 +21,15 @@ public abstract class ChatActivity extends Activity {
                     this.chatView.onReceiveValue(uri);
                 }
             }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            if (this.chatView != null) {
+                this.chatView.onReceiveValue(null);
+            }
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (this.chatView != null) {
                 this.chatView.onShowFileChooser();
