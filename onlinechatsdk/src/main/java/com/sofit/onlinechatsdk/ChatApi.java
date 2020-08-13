@@ -10,8 +10,9 @@ import java.util.Map;
 
 public class ChatApi {
 
-    private Connection post(String url, JSONObject params) {
+    private Connection post(String url, String token, JSONObject params) {
         Map<String, String> headers = new HashMap<>();
+        headers.put("X-Token", token);
         headers.put("Content-Type", "application/json");
         Connection connection = new Connection(url, headers);
         if (!connection.IsConnected()) {
@@ -22,7 +23,14 @@ public class ChatApi {
     }
 
     public JSONObject send(String token, String method, JSONObject params) {
-        Connection connection = this.post(String.format("https://admin.verbox.ru/api/chat/%s/%s", token, method), params);
+//        https://admin.verbox.ru/json/v1.0/chat/message/forward
+//        https://admin.verbox.ru/json/v1.0/chat/message/setStatus
+//        https://admin.verbox.ru/json/v1.0/chat/message/sendToClient
+//        https://admin.verbox.ru/json/v1.0/chat/message/sendToOperator
+//        https://admin.verbox.ru/json/v1.0/chat/message/getList
+
+//        Connection connection = this.post(String.format("https://admin.verbox.ru/api/chat/%s/%s", token, method), params);
+        Connection connection = this.post(String.format("https://admin.verbox.ru/json/v1.0/%s", method), token, params);
         if (connection == null) {
             return MyJsonObject.create();
         }
@@ -33,9 +41,10 @@ public class ChatApi {
     }
 
     public JSONObject message(String token, JSONObject params) {
-        return send(token, "message", params);
+        return send(token, "chat/message/getList", params);
     }
 
+    @Deprecated
     public static JSONObject getNewMessages(String token, String clientId) {
         SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         MyJsonObject dateRange = MyJsonObject.create();
@@ -48,6 +57,26 @@ public class ChatApi {
         params.Put("status", "unreaded");
         params.Put("dateRange", dateRange);
 
-        return new ChatApi().message(token, params);
+        MyJsonObject result = (MyJsonObject) new ChatApi().message(token, params);
+        MyJsonArray dataArray = result.GetJsonArray("data");
+        MyJsonObject data = dataArray.GetJsonObject(0);
+        MyJsonArray messages = data.GetJsonArray("messages");
+        if (messages.length() == 0) {
+            return result;
+        }
+        MyJsonArray realMessages = MyJsonArray.create();
+        for (int i = 0; i < messages.length(); i++) {
+            MyJsonObject message = messages.GetJsonObject(i);
+            if (message.GetBoolean("isVisibleForClient", true)) {
+                realMessages.Put(message);
+            }
+        }
+        if (realMessages.length() == 0) {
+            return MyJsonObject.create("{\"ok\":true,\"data\":[]}");
+        }
+        data.Put("messages", realMessages);
+        dataArray.Put(0, data);
+        result.Put("data", dataArray);
+        return result;
     }
 }

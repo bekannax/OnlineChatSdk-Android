@@ -21,6 +21,35 @@ class MyJsonObject extends JSONObject {
         return this;
     }
 
+    int GetInteger(String key) {
+        try {
+            return getInt(key);
+        } catch (Exception e) {/**/}
+        return 0;
+    }
+
+    String GetString(String key) {
+        try {
+            return getString(key);
+        } catch (Exception e) {/**/}
+        return "";
+    }
+
+    boolean GetBoolean(String key, boolean defValue) {
+        try {
+            return getBoolean(key);
+        } catch (Exception e) {/**/}
+        return defValue;
+    }
+
+    MyJsonArray GetJsonArray(String key) {
+        return MyJsonArray.create(GetString(key));
+    }
+
+    MyJsonObject GetJsonObject(String key) {
+        return MyJsonObject.create(GetString(key));
+    }
+
     static MyJsonObject create(){
         try {
             return new MyJsonObject();

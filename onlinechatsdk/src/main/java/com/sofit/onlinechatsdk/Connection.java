@@ -118,6 +118,7 @@ class Connection {
         } catch (Exception  e) {
             code = -1;
         }
+
         this.connection.disconnect();
         this.connection = null;
         if (code == 200 && response != null && !response.isEmpty()) {

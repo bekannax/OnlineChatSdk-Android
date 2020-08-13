@@ -28,7 +28,7 @@ class ChatWebViewClient extends WebViewClient {
             browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             this.parent.startActivity(browserIntent);
         } catch (Exception e) {
-            Log.e("onlinechat.sdk", e.toString());
+            Log.e(ChatView.logTag, e.toString());
         }
         return true;
     }
