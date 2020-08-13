@@ -23,13 +23,6 @@ public class ChatApi {
     }
 
     public JSONObject send(String token, String method, JSONObject params) {
-//        https://admin.verbox.ru/json/v1.0/chat/message/forward
-//        https://admin.verbox.ru/json/v1.0/chat/message/setStatus
-//        https://admin.verbox.ru/json/v1.0/chat/message/sendToClient
-//        https://admin.verbox.ru/json/v1.0/chat/message/sendToOperator
-//        https://admin.verbox.ru/json/v1.0/chat/message/getList
-
-//        Connection connection = this.post(String.format("https://admin.verbox.ru/api/chat/%s/%s", token, method), params);
         Connection connection = this.post(String.format("https://admin.verbox.ru/json/v1.0/%s", method), token, params);
         if (connection == null) {
             return MyJsonObject.create();

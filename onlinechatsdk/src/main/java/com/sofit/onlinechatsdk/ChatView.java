@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -80,70 +79,38 @@ public class ChatView extends WebView implements ChatListener {
         dateRange.Put("start", startDate);
         dateRange.Put("stop", dtFormat.format(currentDate));
 
-        Log.d(logTag, "dateRange : " + startDate + " : " + dtFormat.format(currentDate));
-
-//        dateRange.Put("start", "2020-08-13");
-//        dateRange.Put("stop", "2020-08-13");
-
-
         MyJsonObject params = MyJsonObject.create();
         params.Put("client", MyJsonObject.create().Put("clientId", clientId));
+        params.Put("sender", "operator");
+        params.Put("status", "unreaded");
         params.Put("dateRange", dateRange);
 
         ChatApiMessagesWrapper resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) new ChatApi().message(token, params) );
-
-//        Log.d(ChatView.logTag, "getUnreadedMessages : " + params.toString() + " : " + resultWrapper.getMessages().toString());
-
         if (resultWrapper.getMessages().length() == 0) {
             return resultWrapper.getResult();
         }
 
         MyJsonArray unreadedMessages = MyJsonArray.create();
-        String lastDateTime = "";
-        for (int i = resultWrapper.getMessages().length() - 1; i >= 0; i--) {
+        for (int i = 0; i < resultWrapper.getMessages().length(); i++) {
             MyJsonObject message = resultWrapper.getMessages().GetJsonObject(i);
-            lastDateTime = message.GetString("dateTime");
-            if (message.GetString("whoSend").equals("client") ||
-                (message.GetString("whoSend").equals("operator") && message.GetString("status").equals("readed")))
-            {
-                break;
-            }
-            if (!message.GetString("whoSend").equals("operator") ||
-                !message.GetBoolean("isVisibleForClient", true))
-            {
+            if (!message.GetBoolean("isVisibleForClient", true)) {
                 continue;
             }
             unreadedMessages.Put(message);
         }
-        if (!lastDateTime.isEmpty()) {
-            ChatConfig.setLastDateTimeUnreadedMessage(lastDateTime, context);
-        }
         if (unreadedMessages.length() == 0) {
             return MyJsonObject.create("{\"success\":true,\"data\":[]}");
         }
-        MyJsonArray sortUnreadedMessages = MyJsonArray.create();
-        for (int i = unreadedMessages.length() - 1; i >= 0; i--) {
-            sortUnreadedMessages.Put(unreadedMessages.GetJsonObject(i));
-        }
-        resultWrapper.setMessages(sortUnreadedMessages);
+        resultWrapper.setMessages(unreadedMessages);
         return resultWrapper.getResult();
     }
 
     public static JSONObject getUnreadedMessages(Context context) {
-
-//        Log.d(logTag, "getLastDateTimeUnreadedMessage : " + ChatConfig.getLastDateTimeUnreadedMessage(context));
-
-        String startDate = ChatConfig.getLastDateTimeUnreadedMessage(context);
-        if (startDate.isEmpty()) {
-            startDate = (new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date(System.currentTimeMillis() - 86400000 * 14));
-        }
+        String startDate = (new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date(System.currentTimeMillis() - 86400000 * 14));
         return getUnreadedMessages(startDate, context);
     }
 
     public static JSONObject getNewMessages(Context context) {
-
-        Log.d(logTag, "getLastDateTimeNewMessage : " + ChatConfig.getLastDateTimeNewMessage(context));
-
         String startDate = ChatConfig.getLastDateTimeNewMessage(context);
         Date currentDate = new Date(System.currentTimeMillis());
         ChatApiMessagesWrapper resultWrapper;
