@@ -174,8 +174,6 @@ chatView.callJsGetContacts(new ChatListener() {
 ## Получение новых сообщений от оператора
 Для получения новых сообщений, в `ChatView` есть два статичных метода **getUnreadedMessages** и **getNewMessages**.
 
-**getUnreadedMessages**
-
 Перед использование методов, нужно указать `apiToken`.
 Это можно сделать в коде
 ```java
@@ -189,7 +187,7 @@ chatView.setApiToken("<apiToken>");
 JSONObject data = ChatView.getUnreadedMessages(Context context);
 JSONObject data = ChatView.getNewMessages(Context context);
 ```
-Формат **data** аналогичен ответу метода /chat/message/getList в Rest Api.
+Формат `data` аналогичен ответу метода /chat/message/getList в Rest Api.
 
 Подробное описание можно прочесть в разделе «Интеграция и API - REST API - Инструкции по подключению».
 
