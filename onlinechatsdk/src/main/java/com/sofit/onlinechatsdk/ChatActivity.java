@@ -37,6 +37,13 @@ public abstract class ChatActivity extends Activity {
         }
     }
 
+    public void onLinkPressed(String link) {
+        ChatView chat = getChatView();
+        if (chat != null) {
+            chat.openLink(link);
+        }
+    }
+
     public void setChatView(ChatView chatView) {
         this.chatView = chatView;
     }

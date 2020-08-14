@@ -3,10 +3,12 @@ package com.sofit.onlinechatsdk;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -26,6 +28,7 @@ public class ChatView extends WebView implements ChatListener {
     public static final String event_contactsUpdated = "contactsUpdated";
     public static final String event_sendRate = "sendRate";
     public static final String event_clientId = "clientId";
+    public static final String event_linkPressed = "linkPressed";
 
     public static final String method_setClientInfo = "setClientInfo";
     public static final String method_setTarget = "setTarget";
@@ -35,13 +38,10 @@ public class ChatView extends WebView implements ChatListener {
     public static final String method_receiveMessage = "receiveMessage";
     public static final String method_setOperator = "setOperator";
     public static final String method_getContacts = "getContacts";
-    private static final String method_getLocalStorageValues = "getLocalStorageValues";
-    private static final String method_restoreLocalStorage = "restoreLocalStorage";
 
     public static final String logTag = "onlinechat.sdk";
 
-//    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
-    final String loadUrl = "http://admin.verbox.ru:8088/support/chat/%s/%s%s";
+    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
     private String id;
     private String domain;
     private String language;
@@ -55,6 +55,7 @@ public class ChatView extends WebView implements ChatListener {
     private ChatListener contactsUpdatedListener;
     private ChatListener sendRateListener;
     private ChatListener clientIdListener;
+    private ChatListener linkPressedListener;
 
     private ChatListener getContactsCallback;
 
@@ -219,7 +220,7 @@ public class ChatView extends WebView implements ChatListener {
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
-        this.setWebViewClient(new ChatWebViewClient((Activity) this.context, this));
+        this.setWebViewClient(new ChatWebViewClient(this));
         this.chatChromeClient = new ChatChromeClient((Activity) this.context);
         this.setWebChromeClient(this.chatChromeClient);
         this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
@@ -375,9 +376,14 @@ public class ChatView extends WebView implements ChatListener {
         this.clientIdListener = listener;
     }
 
-    public void onReceiveValue(Uri uri) {
-        if (Build.VERSION.SDK_INT >= 26) {
+    public void setOnLinkPressedListener(ChatListener listener) {
+        this.linkPressedListener = listener;
+    }
 
+    public void onReceiveValue(Uri uri) {
+
+        Log.d(logTag, "onReceiveValue - 1");
+        if (Build.VERSION.SDK_INT >= 26) {
             if (getWebChromeClient() != null) {
                 if (getWebChromeClient() instanceof ChatChromeClient) {
                     ((ChatChromeClient) getWebChromeClient()).onReceiveValue(uri);
@@ -404,8 +410,14 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
-    private void saveLocalStorage() {
-        this.callJs(String.format("window.%s();", method_getLocalStorageValues));
+    void openLink(String link) {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ((Activity) this.context).startActivity(browserIntent);
+        } catch (Exception e) {
+            Log.e(ChatView.logTag, e.toString());
+        }
     }
 
     @Override
@@ -414,6 +426,7 @@ public class ChatView extends WebView implements ChatListener {
             setFinished(true);
             callJs();
         }
+
         if (this.listener != null) {
             this.listener.onEvent(name, data);
         }
@@ -456,6 +469,15 @@ public class ChatView extends WebView implements ChatListener {
                 if (this.getContactsCallback != null) {
                     this.getContactsCallback.onEvent(name, data);
                     this.getContactsCallback = null;
+                }
+                break;
+            case event_linkPressed:
+                if (this.linkPressedListener != null) {
+                    this.linkPressedListener.onEvent(ChatView.event_linkPressed, data);
+                } else if (this.context instanceof ChatActivity) {
+                    ((ChatActivity) this.context).onLinkPressed( MyJsonObject.create(data).GetString("link") );
+                } else {
+                    this.openLink( MyJsonObject.create(data).GetString("link") );
                 }
                 break;
         }
