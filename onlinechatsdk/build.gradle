@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+//apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 30
@@ -21,3 +22,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     testImplementation 'junit:junit:4.13'
 }
+
+//publish {
+//    userOrg = 'ooosofit'
+//    groupId = 'com.github.bekannax'
+//    repoName = 'OnlineChatSdk'
+//    artifactId = 'OnlineChatSdk'
+//    publishVersion = '0.1'
+//    desc = 'A small library containing a wrapper for the WebView of Android.'
+//    licences = ['MIT']
+//    website = 'https://github.com/bekannax/OnlineChatSdk-Android'
+//}
