@@ -183,7 +183,7 @@ chatView.setApiToken("<apiToken>");
 ```
 или в `layout`
 
-![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14_19-05-48.png?raw=true)
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14_23-52-04.png?raw=true)
 
 ```java
 JSONObject data = ChatView.getUnreadedMessages(Context context);
