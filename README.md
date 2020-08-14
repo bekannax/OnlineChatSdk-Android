@@ -1,4 +1,5 @@
 # OnlineChatSdk-Android ![API](https://img.shields.io/badge/API-17%2B-brightgreen.svg?style=flat) [![Download](https://api.bintray.com/packages/ooosofit/OnlineChatSdk/OnlineChatSdk/images/download.svg) ](https://bintray.com/ooosofit/OnlineChatdk/OnlineChatSdk/_latestVersion)
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14%2017.52.26.jpg?raw=true)
 ## Добавление в проект
 ```groovy
 buildscript {
@@ -14,14 +15,14 @@ buildscript {
 ```
 ## Получение id
 Перейдите в раздел «Настройки - Установка» и скопируйте значение переменной id.
-![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png)
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-03-21_16-53-28.png?raw=true)
 
 ## Пример использования
 Создайте `layout` с нашим `ChatView`. Создайте `Activity`, которая наследует `ChatActivity`.
 ```xml
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
-    
+
     <com.sofit.onlinechatsdk.ChatView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -29,6 +30,7 @@ buildscript {
         android:id="@+id/chatview"
         app:id="<Ваш id>"
         app:domain="<Домен вашего сайта>"
+        app:apiToken="<Токен для доступа к Rest Api>"
         app:autoLoad="true" />
 </android.support.constraint.ConstraintLayout>
  ```
@@ -60,7 +62,7 @@ chatView.setLanguage("en").setClientId("newId").load();
  * **contactsUpdated** - посетитель обновил информацию о себе.
  * **sendRate** - посетитель отправил новый отзыв.
  * **clientId** - уникальный идентификатор посетителя.
- 
+
 Для каждого события есть персональный `Listener`.
 
 ```java
@@ -106,9 +108,9 @@ chatView.setOnClientIdListener(new ChatListener() {
     }
 });
 ```
- 
+
 Или можно задать один `Listener` на все события.
- 
+
 ```java
 chatView.setListener(new ChatListener() {
     @Override
@@ -167,15 +169,28 @@ chatView.callJsGetContacts(new ChatListener() {
 
 ## Получение token
 Перейдите в раздел «Интеграция и API - REST API», скопируйте существующий token или добавьте новый.
-![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-04-01_18-32-22.png)
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-04-01_18-32-22.png?raw=true)
 
-## ChatApi
-**getNewMessages** - получение новых сообщений от оператора.
+## Получение новых сообщений от оператора
+Для получения новых сообщений, в `ChatView` есть два статичных метода **getUnreadedMessages** и **getNewMessages**.
+
+**getUnreadedMessages**
+
+Перед использование данных методов, нужно указать `apiToken`.
+Это можно сделать в коде
+```java
+chatView.setApiToken("<apiToken>");
+```
+или в `layout`
+
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14_19-05-48.png?raw=true)
 
 ```java
-JSONObject data = ChatApi.getNewMessages("<TOKEN>", "<clientId>");
-if (data.length() > 0) {
-    // Есть новые сообщения от оператора
-}
+JSONObject data = ChatView.getUnreadedMessages(Context context);
+JSONObject data = ChatView.getNewMessages(Context context);
 ```
+Формат **data** аналогичен ответу метода /chat/message/getList в Rest Api.
+
 Подробное описание можно прочесть в разделе «Интеграция и API - REST API - Инструкции по подключению».
+
+![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14_19-05-48.png?raw=true)
