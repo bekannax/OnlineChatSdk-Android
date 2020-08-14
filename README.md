@@ -176,7 +176,7 @@ chatView.callJsGetContacts(new ChatListener() {
 
 **getUnreadedMessages**
 
-Перед использование данных методов, нужно указать `apiToken`.
+Перед использование методов, нужно указать `apiToken`.
 Это можно сделать в коде
 ```java
 chatView.setApiToken("<apiToken>");
