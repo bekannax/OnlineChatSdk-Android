@@ -178,6 +178,8 @@ chatView.callJsGetContacts(new ChatListener() {
 
 **getNewMessages** работает аналогичным образом, но при повторном запросе предыдущие сообщения уже не возвращаются.
 Перед использование методов, нужно указать `apiToken`.
+
+
 Это можно сделать в коде
 ```java
 chatView.setApiToken("<apiToken>");
