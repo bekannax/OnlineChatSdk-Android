@@ -74,11 +74,10 @@ public class ChatView extends WebView implements ChatListener {
             return MyJsonObject.create("{\"success\":false,\"error\":{\"code\":0,\"descr\":\"Не задан clientId\"}}");
         }
 
-        ChatSimpleDateFormat dtFormat = new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date currentDate = new Date(System.currentTimeMillis());
+
         MyJsonObject dateRange = MyJsonObject.create();
         dateRange.Put("start", startDate);
-        dateRange.Put("stop", dtFormat.format(currentDate));
+        dateRange.Put("stop", (new ChatSimpleDateFormat()).getCurrent());
 
         MyJsonObject params = MyJsonObject.create();
         params.Put("client", MyJsonObject.create().Put("clientId", clientId));
@@ -107,13 +106,11 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public static JSONObject getUnreadedMessages(Context context) {
-        String startDate = (new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date(System.currentTimeMillis() - 86400000 * 14));
-        return getUnreadedMessages(startDate, context);
+        return getUnreadedMessages( (new ChatSimpleDateFormat()).format(new Date(System.currentTimeMillis() - 86400000 * 14)) , context);
     }
 
     public static JSONObject getNewMessages(Context context) {
         String startDate = ChatConfig.getLastDateTimeNewMessage(context);
-        Date currentDate = new Date(System.currentTimeMillis());
         ChatApiMessagesWrapper resultWrapper;
         if (startDate.isEmpty()) {
             resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(context) );
@@ -121,11 +118,11 @@ public class ChatView extends WebView implements ChatListener {
             resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(startDate, context) );
         }
         if (resultWrapper.getMessages().length() == 0) {
-            ChatConfig.setLastDateTimeNewMessage( (new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(currentDate) , context);
+            ChatConfig.setLastDateTimeNewMessage( (new ChatSimpleDateFormat()).getCurrent() , context);
             return resultWrapper.getResult();
         }
         MyJsonObject message = resultWrapper.getMessages().GetJsonObject( resultWrapper.getMessages().length() - 1 );
-        DateFormat formatter = new ChatSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat formatter = new ChatSimpleDateFormat();
         try {
             Date date = formatter.parse(message.GetString("dateTime"));
             Date newDate = new Date();
