@@ -64,16 +64,13 @@ public class ChatView extends WebView implements ChatListener {
     private List<String> callJs;
     private boolean finished = false;
 
-    private static JSONObject getUnreadedMessages(String startDate, Context context) {
-        String token = ChatConfig.getApiToken(context);
+    private static JSONObject getUnreadedMessages(String startDate, String clientId, String token, Context context) {
         if (token.isEmpty()) {
             return MyJsonObject.create("{\"success\":false,\"error\":{\"code\":0,\"descr\":\"Не задан token\"}}");
         }
-        String clientId = ChatConfig.getClientId(context);
         if (clientId.isEmpty()) {
             return MyJsonObject.create("{\"success\":false,\"error\":{\"code\":0,\"descr\":\"Не задан clientId\"}}");
         }
-
 
         MyJsonObject dateRange = MyJsonObject.create();
         dateRange.Put("start", startDate);
@@ -106,16 +103,20 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public static JSONObject getUnreadedMessages(Context context) {
-        return getUnreadedMessages( (new ChatSimpleDateFormat()).format(new Date(System.currentTimeMillis() - 86400000 * 14)) , context);
+        return getUnreadedMessages( ChatConfig.getClientId(context), ChatConfig.getApiToken(context), context);
     }
 
-    public static JSONObject getNewMessages(Context context) {
+    public static JSONObject getUnreadedMessages(String clientId, String token, Context context) {
+        return getUnreadedMessages( (new ChatSimpleDateFormat()).format(new Date(System.currentTimeMillis() - 86400000 * 14)), clientId, token, context);
+    }
+
+    public static JSONObject getNewMessages(String clientId, String token, Context context) {
         String startDate = ChatConfig.getLastDateTimeNewMessage(context);
         ChatApiMessagesWrapper resultWrapper;
         if (startDate.isEmpty()) {
-            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(context) );
+            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(clientId, token, context) );
         } else {
-            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(startDate, context) );
+            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(startDate, clientId, token, context) );
         }
         if (resultWrapper.getMessages().length() == 0) {
             ChatConfig.setLastDateTimeNewMessage( (new ChatSimpleDateFormat()).getCurrent() , context);
@@ -130,6 +131,10 @@ public class ChatView extends WebView implements ChatListener {
             ChatConfig.setLastDateTimeNewMessage(formatter.format(newDate), context);
         } catch (Exception e) {/**/}
         return resultWrapper.getResult();
+    }
+
+    public static JSONObject getNewMessages(Context context) {
+        return getNewMessages(ChatConfig.getClientId(context), ChatConfig.getApiToken(context), context);
     }
 
     public ChatView(Context context) {
