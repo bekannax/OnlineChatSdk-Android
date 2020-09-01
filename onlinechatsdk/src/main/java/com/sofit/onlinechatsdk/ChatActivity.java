@@ -19,12 +19,12 @@ public abstract class ChatActivity extends Activity {
                 Uri uri = data.getData();
                 if (this.chatView != null) {
                     this.chatView.onReceiveValue(uri);
+                    return;
                 }
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            if (this.chatView != null) {
-                this.chatView.onReceiveValue(null);
-            }
+        }
+        if (this.chatView != null) {
+            this.chatView.onReceiveValue(null);
         }
     }
 
