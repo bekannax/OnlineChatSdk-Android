@@ -4,9 +4,7 @@
 ```groovy
 buildscript {
     repositories {
-        maven {
-            url 'https://dl.bintray.com/ooosofit/OnlineChatSdk/'
-        }
+        mavenCentral()
     }
     dependencies {
         implementation 'com.github.bekannax:OnlineChatSdk:0.1.3'
