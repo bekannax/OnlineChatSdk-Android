@@ -29,6 +29,7 @@ public class ChatView extends WebView implements ChatListener {
     public static final String event_sendRate = "sendRate";
     public static final String event_clientId = "clientId";
     public static final String event_linkPressed = "linkPressed";
+    public static final String event_closeSupport = "closeSupport";
 
     public static final String method_setClientInfo = "setClientInfo";
     public static final String method_setTarget = "setTarget";
@@ -209,6 +210,12 @@ public class ChatView extends WebView implements ChatListener {
         if (setup.length() > 0) {
             setup.append("}");
         }
+        if (setup.length() == 0) {
+            setup.append("?");
+        } else {
+            setup.append("&");
+        }
+        setup.append("sdk-show-close-button=1");
         return setup.toString();
     }
 
@@ -383,7 +390,6 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void onReceiveValue(Uri uri) {
-
         Log.d(logTag, "onReceiveValue - 1");
         if (Build.VERSION.SDK_INT >= 26) {
             if (getWebChromeClient() != null) {
@@ -480,6 +486,11 @@ public class ChatView extends WebView implements ChatListener {
                     ((ChatActivity) this.context).onLinkPressed( MyJsonObject.create(data).GetString("link") );
                 } else {
                     this.openLink( MyJsonObject.create(data).GetString("link") );
+                }
+                break;
+            case event_closeSupport:
+                if (this.context instanceof ChatActivity) {
+                    ((ChatActivity) this.context).onCloseSupport();
                 }
                 break;
         }

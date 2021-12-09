@@ -14,6 +14,7 @@ public abstract class ChatActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
@@ -42,6 +43,10 @@ public abstract class ChatActivity extends Activity {
         if (chat != null) {
             chat.openLink(link);
         }
+    }
+
+    public void onCloseSupport() {
+        finish();
     }
 
     public void setChatView(ChatView chatView) {
