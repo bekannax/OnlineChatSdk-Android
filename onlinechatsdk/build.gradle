@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 30
-        versionCode 14
-        versionName '0.1.4'
+        versionCode 15
+        versionName '0.1.5'
     }
     buildTypes {
         release {
@@ -25,7 +25,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'com.github.bekannax'
-    PUBLISH_VERSION = '0.1.4'
+    PUBLISH_VERSION = '0.1.5'
     PUBLISH_ARTIFACT_ID = 'OnlineChatSdk'
 }
 
