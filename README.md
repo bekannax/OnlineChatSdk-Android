@@ -1,4 +1,4 @@
-# OnlineChatSdk-Android ![API](https://img.shields.io/badge/API-17%2B-brightgreen.svg?style=flat) [![Download](https://api.bintray.com/packages/ooosofit/OnlineChatSdk/OnlineChatSdk/images/download.svg) ](https://bintray.com/ooosofit/OnlineChatdk/OnlineChatSdk/_latestVersion)
+# OnlineChatSdk-Android ![API](https://img.shields.io/badge/API-17%2B-brightgreen.svg?style=flat)
 ![](https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14%2017.52.26.jpg?raw=true)
 ## Добавление в проект
 ```groovy
@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.1.3'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.1.4'
     }
 }
 ```
