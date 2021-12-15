@@ -39,6 +39,7 @@ public class ChatView extends WebView implements ChatListener {
     public static final String method_receiveMessage = "receiveMessage";
     public static final String method_setOperator = "setOperator";
     public static final String method_getContacts = "getContacts";
+    private static final String method_destroy = "destroy";
 
     public static final String logTag = "onlinechat.sdk";
 
@@ -64,6 +65,7 @@ public class ChatView extends WebView implements ChatListener {
     private ChatChromeClient chatChromeClient;
     private List<String> callJs;
     private boolean finished = false;
+    private boolean destroyed = false;
 
     private static JSONObject getUnreadedMessages(String startDate, String clientId, String token, Context context) {
         if (token.isEmpty()) {
@@ -349,6 +351,10 @@ public class ChatView extends WebView implements ChatListener {
         this.callJsMethod(method_getContacts, new Command("window.getContactsCallback"));
     }
 
+    public void callJsDestroy() {
+        this.callJsMethod(method_destroy);
+    }
+
     public boolean isFinished() {
         return this.finished;
     }
@@ -418,6 +424,13 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
+    public void destroy() {
+        super.destroy();
+        stopLoading();
+        callJsDestroy();
+        destroyed = true;
+    }
+
     void openLink(String link) {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
@@ -430,6 +443,9 @@ public class ChatView extends WebView implements ChatListener {
 
     @Override
     public void onEvent(String name, String data) {
+        if (destroyed) {
+            return;
+        }
         if (!isFinished()) {
             setFinished(true);
             callJs();

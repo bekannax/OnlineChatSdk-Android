@@ -49,6 +49,13 @@ public abstract class ChatActivity extends Activity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        chatView.destroy();
+        chatView = null;
+    }
+
     public void setChatView(ChatView chatView) {
         this.chatView = chatView;
     }
