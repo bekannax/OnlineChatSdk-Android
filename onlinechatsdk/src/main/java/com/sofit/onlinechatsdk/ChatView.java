@@ -3,6 +3,7 @@ package com.sofit.onlinechatsdk;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -142,26 +143,17 @@ public class ChatView extends WebView implements ChatListener {
 
     public ChatView(Context context) {
         this(context, null);
-        this.context = context;
-        if (this.context instanceof ChatActivity) {
-            ((ChatActivity) this.context).setChatView(this);
-        }
+        init(context);
     }
 
     public ChatView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
-        this.context = context;
-        if (this.context instanceof ChatActivity) {
-            ((ChatActivity) this.context).setChatView(this);
-        }
+        init(context);
     }
 
     public ChatView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.context = context;
-        if (this.context instanceof ChatActivity) {
-            ((ChatActivity) this.context).setChatView(this);
-        }
+        init(context);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChatView);
         this.id = a.getString(R.styleable.ChatView_id);
         this.domain = a.getString(R.styleable.ChatView_domain);
@@ -171,6 +163,14 @@ public class ChatView extends WebView implements ChatListener {
             this.load();
         }
         a.recycle();
+    }
+
+    private void init(Context context) {
+        this.context = context;
+        ChatActivity activity = getActivityFromContext(context);
+        if (activity != null) {
+            activity.setChatView(this);
+        }
     }
 
     private String getCallJsMethod(String methodName, Object... params) {
@@ -232,9 +232,26 @@ public class ChatView extends WebView implements ChatListener {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
         this.setWebViewClient(new ChatWebViewClient(this));
-        this.chatChromeClient = new ChatChromeClient((Activity) this.context);
-        this.setWebChromeClient(this.chatChromeClient);
+        ChatActivity activity = getActivityFromContext(this.context);
+        if (activity != null) {
+            this.chatChromeClient = new ChatChromeClient(activity);
+            this.setWebChromeClient(this.chatChromeClient);
+        } else {
+            this.chatChromeClient = null;
+        }
         this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
+    }
+
+    private ChatActivity getActivityFromContext(Context context) {
+        try {
+            while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+                context = ((ContextWrapper) context).getBaseContext();
+            }
+            assert context instanceof ChatActivity;
+            return (ChatActivity) context;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void load() {
@@ -288,12 +305,7 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void callJs(final String script) {
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                loadUrl(String.format("javascript:%s", script));
-            }
-        });
+        this.post(() -> loadUrl(String.format("javascript:%s", script)));
     }
 
     public void callJs() {
@@ -396,7 +408,6 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void onReceiveValue(Uri uri) {
-        Log.d(logTag, "onReceiveValue - 1");
         if (Build.VERSION.SDK_INT >= 26) {
             if (getWebChromeClient() != null) {
                 if (getWebChromeClient() instanceof ChatChromeClient) {
@@ -435,7 +446,7 @@ public class ChatView extends WebView implements ChatListener {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ((Activity) this.context).startActivity(browserIntent);
+            getActivityFromContext(context).startActivity(browserIntent);
         } catch (Exception e) {
             Log.e(ChatView.logTag, e.toString());
         }
@@ -498,15 +509,19 @@ public class ChatView extends WebView implements ChatListener {
             case event_linkPressed:
                 if (this.linkPressedListener != null) {
                     this.linkPressedListener.onEvent(ChatView.event_linkPressed, data);
-                } else if (this.context instanceof ChatActivity) {
-                    ((ChatActivity) this.context).onLinkPressed( MyJsonObject.create(data).GetString("link") );
                 } else {
-                    this.openLink( MyJsonObject.create(data).GetString("link") );
+                    ChatActivity activity = getActivityFromContext(context);
+                    if (activity != null) {
+                        activity.onLinkPressed( MyJsonObject.create(data).GetString("link") );
+                    } else {
+                        this.openLink( MyJsonObject.create(data).GetString("link") );
+                    }
                 }
                 break;
             case event_closeSupport:
-                if (this.context instanceof ChatActivity) {
-                    ((ChatActivity) this.context).onCloseSupport();
+                ChatActivity activity = getActivityFromContext(context);
+                if (activity != null) {
+                    activity.onCloseSupport();
                 }
                 break;
         }
