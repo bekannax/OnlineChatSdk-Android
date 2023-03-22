@@ -442,7 +442,7 @@ public class ChatView extends WebView implements ChatListener {
         destroyed = true;
     }
 
-    void openLink(String link) {
+    public void openLink(String link) {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
