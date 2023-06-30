@@ -1,6 +1,6 @@
 package com.sofit.onlinechatsdk;
 
-class Command {
+public class Command {
 
     String command;
 

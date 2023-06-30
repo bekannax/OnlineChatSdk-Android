@@ -2,7 +2,7 @@ package com.sofit.onlinechatsdk;
 
 import android.webkit.JavascriptInterface;
 
-class ChatInterface {
+public class ChatInterface {
 
     private ChatListener mListener;
 

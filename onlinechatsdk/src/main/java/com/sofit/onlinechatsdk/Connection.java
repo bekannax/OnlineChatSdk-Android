@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-class Connection {
+public class Connection {
 
     private final String CHARSET = "UTF-8";
 

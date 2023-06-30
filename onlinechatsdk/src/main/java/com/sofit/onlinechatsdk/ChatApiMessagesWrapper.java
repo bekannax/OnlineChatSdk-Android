@@ -1,6 +1,6 @@
 package com.sofit.onlinechatsdk;
 
-class ChatApiMessagesWrapper {
+public class ChatApiMessagesWrapper {
 
     private MyJsonObject result;
     private MyJsonArray dataArray;

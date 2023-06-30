@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-class ChatSimpleDateFormat extends SimpleDateFormat {
+public class ChatSimpleDateFormat extends SimpleDateFormat {
 
     ChatSimpleDateFormat() {
         super("yyyy-MM-dd HH:mm:ss");

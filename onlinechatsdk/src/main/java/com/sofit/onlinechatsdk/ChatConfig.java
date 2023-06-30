@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-class ChatConfig {
+public class ChatConfig {
 
     private static ChatConfig instance = null;
     private static final String configKeyApiToken = "apiToken";

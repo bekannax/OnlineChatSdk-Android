@@ -3,7 +3,7 @@ package com.sofit.onlinechatsdk;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-class MyJsonArray extends JSONArray {
+public class MyJsonArray extends JSONArray {
 
     private MyJsonArray() {
         super();
