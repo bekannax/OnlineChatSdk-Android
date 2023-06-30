@@ -3,7 +3,7 @@ package com.sofit.onlinechatsdk;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class MyJsonObject extends JSONObject {
+public class MyJsonObject extends JSONObject {
 
     private MyJsonObject() {
         super();

@@ -14,7 +14,7 @@ import java.util.List;
 
 import androidx.core.app.ActivityCompat;
 
-class ChatChromeClient extends WebChromeClient {
+public class ChatChromeClient extends WebChromeClient {
 
     private Activity parent;
     private ValueCallback<Uri[]> filePathCallback;
@@ -115,11 +115,11 @@ class ChatChromeClient extends WebChromeClient {
         this.webView = webView;
         this.filePathCallback = filePathCallback;
         this.fileChooserParams = fileChooserParams;
-        if (checkStoragePermission()) {
+//        if (checkStoragePermission()) {
             Intent pickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
             pickerIntent.setType("*/*");
             this.parent.startActivityForResult(pickerIntent, 0);
-        }
+//        }
         return true;
     }
 }

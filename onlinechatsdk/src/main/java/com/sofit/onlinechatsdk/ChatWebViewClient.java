@@ -6,7 +6,7 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.RequiresApi;
 
-class ChatWebViewClient extends WebViewClient {
+public class ChatWebViewClient extends WebViewClient {
 
     private final ChatView chat;
 

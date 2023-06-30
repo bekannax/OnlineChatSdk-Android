@@ -239,7 +239,9 @@ public class ChatView extends WebView implements ChatListener {
         } else {
             this.chatChromeClient = null;
         }
-        this.loadUrl(String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)));
+
+//        this.loadUrl("file:///android_asset/chat.html");
+        this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)) );
     }
 
     private ChatActivity getActivityFromContext(Context context) {
