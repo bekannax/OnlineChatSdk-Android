@@ -50,6 +50,7 @@ public class ChatView extends WebView implements ChatListener {
     private String language;
     private String clientId;
     private String apiToken;
+    private Boolean showCloseButton;
 
     private ChatListener listener;
     private ChatListener operatorSendMessageListener;
@@ -159,6 +160,7 @@ public class ChatView extends WebView implements ChatListener {
         this.domain = a.getString(R.styleable.ChatView_domain);
         this.language = a.getString(R.styleable.ChatView_language);
         this.setApiToken(a.getString(R.styleable.ChatView_apiToken));
+        this.showCloseButton = a.getBoolean(R.styleable.ChatView_showCloseButton, true);
         if (a.getBoolean(R.styleable.ChatView_autoLoad, false)) {
             this.load();
         }
@@ -196,7 +198,7 @@ public class ChatView extends WebView implements ChatListener {
         return builder.toString();
     }
 
-    private String getSetup(String language, String clientId) {
+    private String getSetup(String language, String clientId, Boolean showCloseButton) {
         StringBuilder setup = new StringBuilder();
         if (language != null && !language.isEmpty()) {
             setup.append("?setup={\"language\":\"").append(language).append("\"");
@@ -217,11 +219,13 @@ public class ChatView extends WebView implements ChatListener {
         } else {
             setup.append("&");
         }
-        setup.append("sdk-show-close-button=1");
+        if (showCloseButton) {
+            setup.append("sdk-show-close-button=1");
+        }
         return setup.toString();
     }
 
-    private void load(String id, String domain, String language, String clientId) {
+    private void load(String id, String domain, String language, String clientId, Boolean showCloseButton) {
         if (id == null || domain == null || id.isEmpty() || domain.isEmpty()) {
             return;
         }
@@ -241,7 +245,7 @@ public class ChatView extends WebView implements ChatListener {
         }
 
 //        this.loadUrl("file:///android_asset/chat.html");
-        this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId)) );
+        this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
 
     private ChatActivity getActivityFromContext(Context context) {
@@ -257,7 +261,7 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void load() {
-        this.load(this.id, this.domain, this.language, this.clientId);
+        this.load(this.id, this.domain, this.language, this.clientId, this.showCloseButton);
     }
 
     public ChatView setId(String id) {
