@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.2.0'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.2.2'
     }
 }
 ```
@@ -29,6 +29,7 @@ buildscript {
         app:id="<Ваш id>"
         app:domain="<Домен вашего сайта>"
         app:apiToken="<Токен для доступа к Rest Api>"
+        app:showCloseButton="true"
         app:autoLoad="true" />
 </android.support.constraint.ConstraintLayout>
  ```
