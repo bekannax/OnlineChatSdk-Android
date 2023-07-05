@@ -234,6 +234,7 @@ public class ChatView extends WebView implements ChatListener {
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
         this.setWebViewClient(new ChatWebViewClient(this));
         ChatActivity activity = getActivityFromContext(this.context);
@@ -244,7 +245,6 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient = null;
         }
 
-//        this.loadUrl("file:///android_asset/chat.html");
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
 
@@ -312,6 +312,25 @@ public class ChatView extends WebView implements ChatListener {
 
     public void callJs(final String script) {
         this.post(() -> loadUrl(String.format("javascript:%s", script)));
+    }
+
+    public void injectCss(final String style) {
+        String script = String.format("(function() {" +
+            "var parent = document.getElementsByTagName('head').item(0);" +
+            "var style = document.createElement('style');" +
+            "style.type = 'text/css';" +
+            "style.innerHTML = '%s';" +
+            "parent.appendChild(style);" +
+        "})()", style);
+
+        if (isFinished()) {
+            this.callJs( script );
+        } else {
+            if (this.callJs == null) {
+                this.callJs = new ArrayList<>();
+            }
+            this.callJs.add( script );
+        }
     }
 
     public void callJs() {
