@@ -52,10 +52,12 @@ public class ChatConfig {
         return getInstance(context).getConfigString(ChatConfig.configKeyClientId);
     }
 
+    @Deprecated
     public static void setApiToken(String token, Context context) {
         getInstance(context).setConfig(ChatConfig.configKeyApiToken, token);
     }
 
+    @Deprecated
     public static String getApiToken(Context context) {
         return getInstance(context).getConfigString(ChatConfig.configKeyApiToken);
     }
