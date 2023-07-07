@@ -4,7 +4,6 @@
         <attr name="id" format="string" />
         <attr name="domain" format="string" />
         <attr name="language" format="string" />
-        <attr name="apiToken" format="string" />
         <attr name="autoLoad" format="boolean" />
         <attr name="showCloseButton" format="boolean" />
     </declare-styleable>
