@@ -367,7 +367,7 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     void injectCss() {
-        if (!css.isEmpty()) {
+        if (css != null && !css.isEmpty()) {
             this.callJs( String.format(injectCssTemplate, css) );
         }
     }
