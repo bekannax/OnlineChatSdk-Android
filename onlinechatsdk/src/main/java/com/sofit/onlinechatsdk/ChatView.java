@@ -273,8 +273,10 @@ public class ChatView extends WebView implements ChatListener {
             while (!(context instanceof Activity) && context instanceof ContextWrapper) {
                 context = ((ContextWrapper) context).getBaseContext();
             }
-            assert context instanceof ChatActivity;
-            return (ChatActivity) context;
+            if (context instanceof ChatActivity) {
+                return (ChatActivity) context;
+            }
+            return null;
         } catch (Exception e) {
             return null;
         }
