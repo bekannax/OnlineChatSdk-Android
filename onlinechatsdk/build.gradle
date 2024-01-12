@@ -5,8 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 33
-        versionCode 20
-        versionName '0.2.0'
+        versionCode 21
+        versionName '0.2.6'
     }
     buildTypes {
         release {
@@ -22,11 +22,3 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.6.0'
     testImplementation 'junit:junit:4.13.2'
 }
-
-ext {
-    PUBLISH_GROUP_ID = 'com.github.bekannax'
-    PUBLISH_VERSION = '0.2.0'
-    PUBLISH_ARTIFACT_ID = 'OnlineChatSdk'
-}
-
-//apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
