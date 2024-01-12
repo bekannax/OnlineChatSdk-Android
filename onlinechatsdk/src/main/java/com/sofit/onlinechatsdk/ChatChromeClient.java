@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -37,6 +38,12 @@ public class ChatChromeClient extends WebChromeClient {
 //        }
 //        return true;
 //    }
+
+
+    @Override
+    public void onPermissionRequest(PermissionRequest request) {
+        super.onPermissionRequest(request);
+    }
 
     private boolean checkStoragePermission() {
         if (this.parent == null) {

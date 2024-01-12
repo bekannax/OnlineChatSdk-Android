@@ -188,7 +188,7 @@ public class ChatView extends WebView implements ChatListener {
 
     private void init(Context context) {
         this.context = context;
-        ChatActivity activity = getActivityFromContext(context);
+        ChatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.setChatView(this);
         }
@@ -256,7 +256,7 @@ public class ChatView extends WebView implements ChatListener {
 
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
         this.setWebViewClient(new ChatWebViewClient(this));
-        ChatActivity activity = getActivityFromContext(this.context);
+        Activity activity = getActivityFromContext(this.context);
         if (activity != null) {
             this.chatChromeClient = new ChatChromeClient(activity);
             this.setWebChromeClient(this.chatChromeClient);
@@ -268,13 +268,27 @@ public class ChatView extends WebView implements ChatListener {
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
 
-    private ChatActivity getActivityFromContext(Context context) {
+    private ChatActivity getChatActivityFromContext(Context context) {
         try {
             while (!(context instanceof Activity) && context instanceof ContextWrapper) {
                 context = ((ContextWrapper) context).getBaseContext();
             }
             if (context instanceof ChatActivity) {
                 return (ChatActivity) context;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Activity getActivityFromContext(Context context) {
+        try {
+            while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+                context = ((ContextWrapper) context).getBaseContext();
+            }
+            if (context instanceof Activity) {
+                return (Activity) context;
             }
             return null;
         } catch (Exception e) {
@@ -576,7 +590,7 @@ public class ChatView extends WebView implements ChatListener {
                 if (this.linkPressedListener != null) {
                     this.linkPressedListener.onEvent(ChatView.event_linkPressed, data);
                 } else {
-                    ChatActivity activity = getActivityFromContext(context);
+                    ChatActivity activity = getChatActivityFromContext(context);
                     if (activity != null) {
                         activity.onLinkPressed( MyJsonObject.create(data).GetString("link") );
                     } else {
@@ -585,7 +599,7 @@ public class ChatView extends WebView implements ChatListener {
                 }
                 break;
             case event_closeSupport:
-                ChatActivity activity = getActivityFromContext(context);
+                ChatActivity activity = getChatActivityFromContext(context);
                 if (activity != null) {
                     activity.onCloseSupport();
                 }
