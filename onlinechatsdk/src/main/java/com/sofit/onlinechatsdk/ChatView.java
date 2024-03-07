@@ -73,6 +73,8 @@ public class ChatView extends WebView implements ChatListener {
 
     private ChatListener getContactsCallback;
 
+    private ChatFileChooser chatFileChooser;
+
     private Context context;
     private ChatChromeClient chatChromeClient;
     private List<String> callJs;
@@ -258,7 +260,11 @@ public class ChatView extends WebView implements ChatListener {
         this.setWebViewClient(new ChatWebViewClient(this));
         Activity activity = getActivityFromContext(this.context);
         if (activity != null) {
-            this.chatChromeClient = new ChatChromeClient(activity);
+            if (this.chatFileChooser == null) {
+                this.chatChromeClient = new ChatChromeClient(activity);
+            } else {
+                this.chatChromeClient = new ChatChromeClient(activity, this.chatFileChooser);
+            }
             this.setWebChromeClient(this.chatChromeClient);
         } else {
             this.chatChromeClient = null;
@@ -604,6 +610,13 @@ public class ChatView extends WebView implements ChatListener {
                     activity.onCloseSupport();
                 }
                 break;
+        }
+    }
+
+    void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
+        this.chatFileChooser = chatFileChooser;
+        if (this.chatChromeClient != null) {
+            this.chatChromeClient.setOnShowFileChooser(chatFileChooser);
         }
     }
 }

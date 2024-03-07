@@ -21,9 +21,15 @@ public class ChatChromeClient extends WebChromeClient {
     private ValueCallback<Uri[]> filePathCallback;
     private WebView webView;
     private FileChooserParams fileChooserParams;
+    private ChatFileChooser chatFileChooser;
 
     ChatChromeClient(Activity parent) {
         this.parent = parent;
+    }
+
+    ChatChromeClient(Activity parent, ChatFileChooser chatFileChooser) {
+        this.parent = parent;
+        this.chatFileChooser = chatFileChooser;
     }
 
 //    private boolean checkStoragePermission() {
@@ -123,10 +129,18 @@ public class ChatChromeClient extends WebChromeClient {
         this.filePathCallback = filePathCallback;
         this.fileChooserParams = fileChooserParams;
 //        if (checkStoragePermission()) {
-            Intent pickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            pickerIntent.setType("*/*");
-            this.parent.startActivityForResult(pickerIntent, 0);
+            if (chatFileChooser == null) {
+                Intent pickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                pickerIntent.setType("*/*");
+                this.parent.startActivityForResult(pickerIntent, 0);
+            } else {
+                chatFileChooser.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+            }
 //        }
         return true;
+    }
+
+    void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
+        this.chatFileChooser = chatFileChooser;
     }
 }

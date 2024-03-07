@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
+    namespace 'com.sofit.onlinechatsdk'
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 33
-        versionCode 21
-        versionName '0.2.6'
+        targetSdkVersion 34
+        versionCode 22
+        versionName '0.2.7'
     }
     buildTypes {
         release {
@@ -19,6 +20,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.annotation:annotation:1.6.0'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
     testImplementation 'junit:junit:4.13.2'
 }

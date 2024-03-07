@@ -1,42 +1,22 @@
 package com.sofit.onlinechatsdk;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
-public abstract class ChatActivity extends Activity {
+public abstract class ChatActivity extends AppCompatActivity {
 
     private ChatView chatView;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                if (this.chatView != null) {
-                    this.chatView.onReceiveValue(uri);
-                    return;
-                }
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+        new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri uri) {
+                chatView.onReceiveValue(uri);
             }
-        }
-        if (this.chatView != null) {
-            this.chatView.onReceiveValue(null);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (this.chatView != null) {
-                this.chatView.onShowFileChooser();
-            }
-        }
-    }
+        });
 
     public void onLinkPressed(String link) {
         ChatView chat = getChatView();
@@ -60,6 +40,9 @@ public abstract class ChatActivity extends Activity {
 
     public void setChatView(ChatView chatView) {
         this.chatView = chatView;
+        this.chatView.setOnShowFileChooser((webView, filePathCallback, fileChooserParams) -> {
+            mGetContent.launch("*/*");
+        });
     }
 
     public ChatView getChatView() {
