@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 34
+    compileSdk 33
     namespace 'com.sofit.onlinechatsdk'
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode 22
-        versionName '0.2.7'
+        versionName '0.2.8'
     }
     buildTypes {
         release {

@@ -140,7 +140,7 @@ public class ChatChromeClient extends WebChromeClient {
         return true;
     }
 
-    void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
+    public void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
         this.chatFileChooser = chatFileChooser;
     }
 }

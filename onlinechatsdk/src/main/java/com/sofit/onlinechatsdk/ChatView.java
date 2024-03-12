@@ -613,7 +613,7 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
-    void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
+    public void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
         this.chatFileChooser = chatFileChooser;
         if (this.chatChromeClient != null) {
             this.chatChromeClient.setOnShowFileChooser(chatFileChooser);
