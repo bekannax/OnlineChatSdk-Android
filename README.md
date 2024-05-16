@@ -28,7 +28,6 @@ buildscript {
         android:id="@+id/chatview"
         app:id="<Ваш id>"
         app:domain="<Домен вашего сайта>"
-        app:apiToken="<Токен для доступа к Rest Api>"
         app:showCloseButton="true"
         app:autoLoad="true" />
 </android.support.constraint.ConstraintLayout>
