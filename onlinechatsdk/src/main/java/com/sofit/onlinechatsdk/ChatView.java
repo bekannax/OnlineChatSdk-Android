@@ -57,7 +57,6 @@ public class ChatView extends WebView implements ChatListener {
     private String language;
     private String clientId;
 
-    @Deprecated
     private String apiToken;
     private Boolean showCloseButton;
     private String css;
@@ -190,9 +189,44 @@ public class ChatView extends WebView implements ChatListener {
 
     private void init(Context context) {
         this.context = context;
+        setChatView(context);
+    }
+
+    private void setChatView(Context context) {
         ChatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.setChatView(this);
+        } else {
+            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            if (activityLegacy != null) {
+                activityLegacy.setChatView(this);
+            }
+        }
+    }
+
+    private void linkPressed(String data) {
+        ChatActivity activity = getChatActivityFromContext(context);
+        if (activity != null) {
+            activity.onLinkPressed( MyJsonObject.create(data).GetString("link") );
+        } else {
+            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            if (activityLegacy != null) {
+                activityLegacy.onLinkPressed( MyJsonObject.create(data).GetString("link") );
+            } else {
+                this.openLink( MyJsonObject.create(data).GetString("link") );
+            }
+        }
+    }
+
+    private void closeSupport() {
+        ChatActivity activity = getChatActivityFromContext(context);
+        if (activity != null) {
+            activity.onCloseSupport();
+        } else {
+            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            if (activityLegacy != null) {
+                activityLegacy.onCloseSupport();
+            }
         }
     }
 
@@ -269,7 +303,6 @@ public class ChatView extends WebView implements ChatListener {
         } else {
             this.chatChromeClient = null;
         }
-
 //        this.loadUrl("file:///android_asset/chat.html");
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
@@ -281,6 +314,20 @@ public class ChatView extends WebView implements ChatListener {
             }
             if (context instanceof ChatActivity) {
                 return (ChatActivity) context;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private ChatActivityLegacy getChatActivityLegacyFromContext(Context context) {
+        try {
+            while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+                context = ((ContextWrapper) context).getBaseContext();
+            }
+            if (context instanceof ChatActivityLegacy) {
+                return (ChatActivityLegacy) context;
             }
             return null;
         } catch (Exception e) {
@@ -341,7 +388,6 @@ public class ChatView extends WebView implements ChatListener {
         return this;
     }
 
-    @Deprecated
     public ChatView setApiToken(String apiToken) {
         this.apiToken = apiToken;
         ChatConfig.setApiToken(this.apiToken, getContext());
@@ -593,22 +639,10 @@ public class ChatView extends WebView implements ChatListener {
                 }
                 break;
             case event_linkPressed:
-                if (this.linkPressedListener != null) {
-                    this.linkPressedListener.onEvent(ChatView.event_linkPressed, data);
-                } else {
-                    ChatActivity activity = getChatActivityFromContext(context);
-                    if (activity != null) {
-                        activity.onLinkPressed( MyJsonObject.create(data).GetString("link") );
-                    } else {
-                        this.openLink( MyJsonObject.create(data).GetString("link") );
-                    }
-                }
+                linkPressed(data);
                 break;
             case event_closeSupport:
-                ChatActivity activity = getChatActivityFromContext(context);
-                if (activity != null) {
-                    activity.onCloseSupport();
-                }
+                closeSupport();
                 break;
         }
     }

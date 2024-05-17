@@ -17,15 +17,8 @@ public class ChatWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         chat.injectCss();
-//        Log.d(ChatView.logTag, "onPageFinished");
         super.onPageFinished(view, url);
     }
-
-//    @Override
-//    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-//        Log.d(ChatView.logTag, "onReceivedError");
-//        super.onReceivedError(view, request, error);
-//    }
 
     @RequiresApi(21)
     @Override
