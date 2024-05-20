@@ -193,11 +193,11 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     private void setChatView(Context context) {
-        ChatActivity activity = getChatActivityFromContext(context);
+        ChatAppCompatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.setChatView(this);
         } else {
-            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            ChatActivity activityLegacy = getChatActivityLegacyFromContext(context);
             if (activityLegacy != null) {
                 activityLegacy.setChatView(this);
             }
@@ -205,11 +205,11 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     private void linkPressed(String data) {
-        ChatActivity activity = getChatActivityFromContext(context);
+        ChatAppCompatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.onLinkPressed( MyJsonObject.create(data).GetString("link") );
         } else {
-            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            ChatActivity activityLegacy = getChatActivityLegacyFromContext(context);
             if (activityLegacy != null) {
                 activityLegacy.onLinkPressed( MyJsonObject.create(data).GetString("link") );
             } else {
@@ -219,11 +219,11 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     private void closeSupport() {
-        ChatActivity activity = getChatActivityFromContext(context);
+        ChatAppCompatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.onCloseSupport();
         } else {
-            ChatActivityLegacy activityLegacy = getChatActivityLegacyFromContext(context);
+            ChatActivity activityLegacy = getChatActivityLegacyFromContext(context);
             if (activityLegacy != null) {
                 activityLegacy.onCloseSupport();
             }
@@ -304,16 +304,19 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient = null;
         }
 //        this.loadUrl("file:///android_asset/chat.html");
+//        Log.d(ChatView.logTag, "loadUrl = " + String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)));
+//        this.loadUrl( "https://ya.ru" );
+//        this.loadUrl( "https://admin.verbox.ru/support/chat/593adecd804fc4e32e7e865d659f2356/sms-tx.ru" );
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
 
-    private ChatActivity getChatActivityFromContext(Context context) {
+    private ChatAppCompatActivity getChatActivityFromContext(Context context) {
         try {
             while (!(context instanceof Activity) && context instanceof ContextWrapper) {
                 context = ((ContextWrapper) context).getBaseContext();
             }
-            if (context instanceof ChatActivity) {
-                return (ChatActivity) context;
+            if (context instanceof ChatAppCompatActivity) {
+                return (ChatAppCompatActivity) context;
             }
             return null;
         } catch (Exception e) {
@@ -321,13 +324,13 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
-    private ChatActivityLegacy getChatActivityLegacyFromContext(Context context) {
+    private ChatActivity getChatActivityLegacyFromContext(Context context) {
         try {
             while (!(context instanceof Activity) && context instanceof ContextWrapper) {
                 context = ((ContextWrapper) context).getBaseContext();
             }
-            if (context instanceof ChatActivityLegacy) {
-                return (ChatActivityLegacy) context;
+            if (context instanceof ChatActivity) {
+                return (ChatActivity) context;
             }
             return null;
         } catch (Exception e) {
