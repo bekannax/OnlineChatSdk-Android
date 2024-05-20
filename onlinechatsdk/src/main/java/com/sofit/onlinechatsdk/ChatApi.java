@@ -37,7 +37,6 @@ public class ChatApi {
         return send(token, "chat/message/getList", params);
     }
 
-    @Deprecated
     public static JSONObject getNewMessages(String token, String clientId) {
         SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         MyJsonObject dateRange = MyJsonObject.create();

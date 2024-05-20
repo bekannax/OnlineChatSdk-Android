@@ -118,7 +118,6 @@ public class ChatView extends WebView implements ChatListener {
         return resultWrapper.getResult();
     }
 
-    @Deprecated
     public static JSONObject getUnreadedMessages(Context context) {
         return getUnreadedMessages( context, ChatConfig.getApiToken(context) );
     }
@@ -154,7 +153,6 @@ public class ChatView extends WebView implements ChatListener {
         return resultWrapper.getResult();
     }
 
-    @Deprecated
     public static JSONObject getNewMessages(Context context) {
         return getNewMessages(context, ChatConfig.getApiToken(context));
     }
@@ -413,8 +411,10 @@ public class ChatView extends WebView implements ChatListener {
         return this.clientId;
     }
 
-    @Deprecated
     public String getApiToken() {
+        if (this.apiToken == null || this.apiToken.isEmpty()) {
+            this.apiToken = ChatConfig.getApiToken(getContext());
+        }
         return this.apiToken;
     }
 
