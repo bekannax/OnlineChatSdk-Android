@@ -31,10 +31,7 @@ public abstract class ChatActivity extends Activity implements ChatViewHelper {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (chatView != null) {
-            chatView.destroy();
-        }
-        chatView = null;
+        onDestroyChatView();
     }
 
     @Override

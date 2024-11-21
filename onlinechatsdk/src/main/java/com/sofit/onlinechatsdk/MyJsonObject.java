@@ -28,7 +28,7 @@ public class MyJsonObject extends JSONObject {
         return 0;
     }
 
-    String GetString(String key) {
+    public String GetString(String key) {
         try {
             return getString(key);
         } catch (Exception e) {/**/}
@@ -58,7 +58,7 @@ public class MyJsonObject extends JSONObject {
         }
     }
 
-    static MyJsonObject create(String json) {
+    public static MyJsonObject create(String json) {
         if (json == null || json.isEmpty())
             return MyJsonObject.create();
         try {

@@ -58,8 +58,8 @@ public class ChatView extends WebView implements ChatListener {
     private String clientId;
 
     private String apiToken;
-    private Boolean showCloseButton;
     private String css;
+    private Boolean showCloseButton;
 
     private ChatListener listener;
     private ChatListener operatorSendMessageListener;
@@ -216,7 +216,7 @@ public class ChatView extends WebView implements ChatListener {
         }
     }
 
-    private void closeSupport() {
+    public void closeSupport() {
         ChatAppCompatActivity activity = getChatActivityFromContext(context);
         if (activity != null) {
             activity.onCloseSupport();
@@ -289,7 +289,7 @@ public class ChatView extends WebView implements ChatListener {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
-        this.setWebViewClient(new ChatWebViewClient(this));
+        this.setWebViewClient(new ChatWebViewClient(this.context, this));
         Activity activity = getActivityFromContext(this.context);
         if (activity != null) {
             if (this.chatFileChooser == null) {

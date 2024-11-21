@@ -143,4 +143,10 @@ public class ChatChromeClient extends WebChromeClient {
     public void setOnShowFileChooser(ChatFileChooser chatFileChooser) {
         this.chatFileChooser = chatFileChooser;
     }
+
+//    @Override
+//    public void onProgressChanged(WebView view, int newProgress) {
+////        super.onProgressChanged(view, newProgress);
+//
+//    }
 }
