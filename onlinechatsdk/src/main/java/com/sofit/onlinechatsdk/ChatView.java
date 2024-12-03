@@ -2,6 +2,7 @@ package com.sofit.onlinechatsdk;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -79,6 +80,8 @@ public class ChatView extends WebView implements ChatListener {
     private List<String> callJs;
     private boolean finished = false;
     private boolean destroyed = false;
+
+    private ProgressDialog progressDialog;
 
     private static JSONObject getUnreadedMessages(String startDate, String clientId, String token, Context context) {
         if (token.isEmpty()) {
@@ -187,6 +190,7 @@ public class ChatView extends WebView implements ChatListener {
 
     private void init(Context context) {
         this.context = context;
+        showLoading(context);
         setChatView(context);
     }
 
@@ -213,6 +217,21 @@ public class ChatView extends WebView implements ChatListener {
             } else {
                 this.openLink( MyJsonObject.create(data).GetString("link") );
             }
+        }
+    }
+
+    public void showLoading(Context context) {
+        if (this.progressDialog != null) {
+            return;
+        }
+        this.progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.hide();
+            progressDialog = null;
         }
     }
 
@@ -302,8 +321,6 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient = null;
         }
 //        this.loadUrl("file:///android_asset/chat.html");
-//        Log.d(ChatView.logTag, "loadUrl = " + String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)));
-//        this.loadUrl( "https://ya.ru" );
 //        this.loadUrl( "https://admin.verbox.ru/support/chat/593adecd804fc4e32e7e865d659f2356/sms-tx.ru" );
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
