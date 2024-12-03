@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebResourceError;
@@ -25,7 +24,6 @@ public class ChatWebViewClient extends WebViewClient {
     ChatWebViewClient(Context context, ChatView chat) {
         this.context = context;
         this.chat = chat;
-        this.progressDialog = new ProgressDialog(context);
     }
 
     private void showMessage(String text) {
@@ -45,15 +43,15 @@ public class ChatWebViewClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
-        Log.d(ChatView.logTag, "ChatWebViewClient :: onPageStarted");
-        progressDialog.show();
+//        Log.d(ChatView.logTag, "ChatWebViewClient :: onPageStarted");
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
         chat.injectCss();
         super.onPageFinished(view, url);
-        progressDialog.hide();
+        chat.hideLoading();
+//        Log.d(ChatView.logTag, "ChatWebViewClient :: onPageFinished");
     }
 
     @RequiresApi(21)
@@ -69,7 +67,7 @@ public class ChatWebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        progressDialog.hide();
+        chat.hideLoading();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showMessage("Loading error: " + error.getDescription().toString());
         } else {
