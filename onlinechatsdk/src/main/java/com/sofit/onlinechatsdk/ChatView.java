@@ -42,6 +42,7 @@ public class ChatView extends WebView implements ChatListener {
     public static final String method_setOperator = "setOperator";
     public static final String method_getContacts = "getContacts";
     private static final String method_destroy = "destroy";
+    private static final String method_pageLoaded = "pageLoaded";
 
     public static final String logTag = "onlinechat.sdk";
 
@@ -70,7 +71,8 @@ public class ChatView extends WebView implements ChatListener {
     private ChatListener sendRateListener;
     private ChatListener clientIdListener;
     private ChatListener linkPressedListener;
-
+//    private ChatListener chatWasOpenListener;
+//    private ChatListener chatWasClosedListener;
     private ChatListener getContactsCallback;
 
     private ChatFileChooser chatFileChooser;
@@ -162,6 +164,22 @@ public class ChatView extends WebView implements ChatListener {
 
     public static JSONObject getNewMessages(Context context, String token) {
         return getNewMessages(ChatConfig.getClientId(context), token, context);
+    }
+
+    public static JSONObject setInfoCustomDataValue(Context context, String token, String key, String value) {
+        return ChatApi.setInfo(
+            token,
+            MyJsonObject.create().Put(
+            "client", MyJsonObject.create()
+                .Put("id", ChatConfig.getClientId(context))
+                .Put("customData", MyJsonObject.create().Put(key, value))
+            )
+        );
+
+    }
+
+    public static JSONObject setInfoCustomDataValue(Context context, String key, String value) {
+        return setInfoCustomDataValue(context, ChatConfig.getApiToken(context), key, value);
     }
 
     public ChatView(Context context) {
@@ -531,6 +549,14 @@ public class ChatView extends WebView implements ChatListener {
         this.listener = listener;
     }
 
+//    public void setOnChatWasOpenListener(ChatListener listener) {
+//        this.chatWasOpenListener = listener;
+//    }
+//
+//    public void setOnChatWasClosedListener(ChatListener listener) {
+//        this.chatWasClosedListener = listener;
+//    }
+
     public void setOnOperatorSendMessageListener(ChatListener listener) {
         this.operatorSendMessageListener = listener;
     }
@@ -592,6 +618,7 @@ public class ChatView extends WebView implements ChatListener {
         stopLoading();
         callJsDestroy();
         destroyed = true;
+//        onChatWasClosed();
     }
 
     public void openLink(String link) {
@@ -613,7 +640,6 @@ public class ChatView extends WebView implements ChatListener {
             setFinished(true);
             callJs();
         }
-
         if (this.listener != null) {
             this.listener.onEvent(name, data);
         }
@@ -673,4 +699,16 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient.setOnShowFileChooser(chatFileChooser);
         }
     }
+
+//    public void onChatWasOpen() {
+//        if (this.chatWasOpenListener != null) {
+//            this.chatWasOpenListener.onEvent("", "");
+//        }
+//    }
+//
+//    public void onChatWasClosed() {
+//        if (this.chatWasClosedListener != null) {
+//            this.chatWasClosedListener.onEvent("", "");
+//        }
+//    }
 }

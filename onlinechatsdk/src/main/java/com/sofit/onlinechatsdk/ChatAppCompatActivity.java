@@ -14,6 +14,18 @@ public abstract class ChatAppCompatActivity extends AppCompatActivity implements
     );
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        onChatWasOpen();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onChatWasClosed();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         onDestroyChatView();

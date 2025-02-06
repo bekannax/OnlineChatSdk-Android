@@ -7,4 +7,6 @@ public interface ChatViewHelper {
     void onLinkPressed(String link);
     void onDestroyChatView();
     void onCloseSupport();
+     void onChatWasOpen();
+    void onChatWasClosed();
 }

@@ -29,6 +29,18 @@ public abstract class ChatActivity extends Activity implements ChatViewHelper {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        onChatWasOpen();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onChatWasClosed();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         onDestroyChatView();

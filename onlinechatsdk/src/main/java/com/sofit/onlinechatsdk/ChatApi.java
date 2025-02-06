@@ -33,8 +33,20 @@ public class ChatApi {
         return MyJsonObject.create();
     }
 
+    public JSONObject clientSetInfo(String token, JSONObject params) {
+        return send(token, "chat/client/setInfo", params);
+    }
+
     public JSONObject message(String token, JSONObject params) {
         return send(token, "chat/message/getList", params);
+    }
+
+//    public static func setInfo(_ token: String, _ params: Dictionary<String, Any>, callback: @escaping (NSDictionary?) -> Void) {
+//        (ChatApi()).setInfo(token, params: params, callback: callback)
+//    }
+
+    public static JSONObject setInfo(String token, JSONObject params) {
+        return (new ChatApi()).clientSetInfo(token, params);
     }
 
     public static JSONObject getNewMessages(String token, String clientId) {
