@@ -68,6 +68,9 @@ public class ChatWebViewClient extends WebViewClient {
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
         chat.hideLoading();
+        if (chat.isFinished()) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showMessage("Loading error: " + error.getDescription().toString());
         } else {
