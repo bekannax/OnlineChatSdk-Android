@@ -12,8 +12,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 public class ChatChromeClient extends WebChromeClient {
@@ -23,6 +26,8 @@ public class ChatChromeClient extends WebChromeClient {
     private WebView webView;
     private FileChooserParams fileChooserParams;
     private ChatFileChooser chatFileChooser;
+    private PermissionRequest currentRequest = null;
+    private Map<String, Boolean> currentRequestResources = new HashMap<>();
 
     ChatChromeClient(Activity parent) {
         this.parent = parent;
@@ -50,14 +55,37 @@ public class ChatChromeClient extends WebChromeClient {
     @Override
     public void onPermissionRequest(PermissionRequest request) {
 //        super.onPermissionRequest(request);
-        checkMediaPermission();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Log.d("onlinechatsdk", "onPermissionRequest :: " + Arrays.toString(request.getResources()));
-            request.grant(request.getResources());
+//            Log.d(ChatView.logTag, "onPermissionRequest :: " + Arrays.toString(request.getResources()));
+            checkMediaPermission(request);
         }
     }
 
-    private void checkMediaPermission() {
+    public void onRequestPermissionsGranted() {
+        if (currentRequest != null && !currentRequestResources.isEmpty()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                String[] requestResources = new String[currentRequestResources.size()];
+                int i = 0;
+                for(Map.Entry<String, Boolean> entry : currentRequestResources.entrySet()) {
+                    requestResources[i] = entry.getKey();
+                }
+                currentRequest.grant(requestResources);
+                currentRequestResources.clear();
+                currentRequest = null;
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void updateCurrentRequest(PermissionRequest request) {
+        for (String res: request.getResources()) {
+            currentRequestResources.put(res, true);
+        }
+        currentRequest = request;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkMediaPermission(PermissionRequest request) {
         if (this.parent == null) {
             return; //  false
         }
@@ -65,15 +93,13 @@ public class ChatChromeClient extends WebChromeClient {
         int permissionCamera = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAMERA);
         if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
             PERMISSIONS_APP.add(Manifest.permission.CAMERA);
+            updateCurrentRequest(request);
         }
         int permissionRecordAudio = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.RECORD_AUDIO);
         if (permissionRecordAudio != PackageManager.PERMISSION_GRANTED) {
             PERMISSIONS_APP.add(Manifest.permission.RECORD_AUDIO);
+            updateCurrentRequest(request);
         }
-//        int permissionCaptureAudioOutput = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-//        if (permissionCaptureAudioOutput != PackageManager.PERMISSION_GRANTED) {
-//            PERMISSIONS_APP.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-//        }
         if (!PERMISSIONS_APP.isEmpty()) {
             String[] permArr = new String[PERMISSIONS_APP.size()];
             PERMISSIONS_APP.toArray(permArr);
@@ -82,10 +108,11 @@ public class ChatChromeClient extends WebChromeClient {
                 permArr,
                 0
             );
-            return; //  false
+//            return; //  false
+        } else {
+            request.grant(request.getResources());
         }
-
-        return; //  true
+//        return; //  true
     }
 
     private boolean checkStoragePermission() {

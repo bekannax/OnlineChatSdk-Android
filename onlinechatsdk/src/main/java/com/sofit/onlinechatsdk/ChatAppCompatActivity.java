@@ -10,7 +10,10 @@ public abstract class ChatAppCompatActivity extends AppCompatActivity implements
 
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(
         new ActivityResultContracts.GetContent(),
-        uri -> getChatView().onReceiveValue(uri)
+        uri -> {
+            getChatView().onReceiveValue(uri);
+            getChatView().onRequestPermissionsGranted();
+        }
     );
 
     @Override

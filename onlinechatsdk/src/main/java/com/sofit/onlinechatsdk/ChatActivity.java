@@ -52,6 +52,7 @@ public abstract class ChatActivity extends Activity implements ChatViewHelper {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (this.chatView != null) {
                 this.chatView.onShowFileChooser();
+                this.chatView.onRequestPermissionsGranted();
             }
         }
     }

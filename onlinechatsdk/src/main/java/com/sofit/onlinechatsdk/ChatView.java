@@ -250,6 +250,7 @@ public class ChatView extends WebView implements ChatListener {
     public void hideLoading() {
         if (progressDialog != null) {
             progressDialog.hide();
+            progressDialog.dismiss();
             progressDialog = null;
         }
     }
@@ -400,6 +401,10 @@ public class ChatView extends WebView implements ChatListener {
     public ChatView setId(String id) {
         this.id = id;
         return this;
+    }
+
+    public void onRequestPermissionsGranted() {
+        chatChromeClient.onRequestPermissionsGranted();
     }
 
     public ChatView setDomain(String domain) {
