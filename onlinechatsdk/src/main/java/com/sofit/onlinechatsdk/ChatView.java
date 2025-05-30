@@ -47,13 +47,14 @@ public class ChatView extends WebView implements ChatListener {
     public static final String logTag = "onlinechat.sdk";
 
     final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
+
     private final String injectCssTemplate = "(function() {" +
-            "var parent = document.getElementsByTagName('head').item(0);" +
-            "var style = document.createElement('style');" +
-            "style.type = 'text/css';" +
-            "style.innerHTML = '%s';" +
-            "parent.appendChild(style);" +
-        "})()";
+        "var parent = document.getElementsByTagName('head').item(0);" +
+        "var style = document.createElement('style');" +
+        "style.type = 'text/css';" +
+        "style.innerHTML = '%s';" +
+        "parent.appendChild(style);" +
+    "})()";
     private String id;
     private String domain;
     private String language;
@@ -324,6 +325,9 @@ public class ChatView extends WebView implements ChatListener {
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         this.addJavascriptInterface(new ChatInterface(this), "ChatInterface");
         this.setWebViewClient(new ChatWebViewClient(this.context, this));
@@ -339,7 +343,6 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient = null;
         }
 //        this.loadUrl("file:///android_asset/chat.html");
-//        this.loadUrl( "https://admin.verbox.ru/support/chat/593adecd804fc4e32e7e865d659f2356/sms-tx.ru" );
         this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
     }
 

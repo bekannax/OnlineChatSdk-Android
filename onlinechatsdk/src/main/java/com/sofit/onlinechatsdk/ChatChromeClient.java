@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -48,7 +49,43 @@ public class ChatChromeClient extends WebChromeClient {
 
     @Override
     public void onPermissionRequest(PermissionRequest request) {
-        super.onPermissionRequest(request);
+//        super.onPermissionRequest(request);
+        checkMediaPermission();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Log.d("onlinechatsdk", "onPermissionRequest :: " + Arrays.toString(request.getResources()));
+            request.grant(request.getResources());
+        }
+    }
+
+    private void checkMediaPermission() {
+        if (this.parent == null) {
+            return; //  false
+        }
+        List<String> PERMISSIONS_APP = new ArrayList<>();
+        int permissionCamera = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAMERA);
+        if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
+            PERMISSIONS_APP.add(Manifest.permission.CAMERA);
+        }
+        int permissionRecordAudio = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.RECORD_AUDIO);
+        if (permissionRecordAudio != PackageManager.PERMISSION_GRANTED) {
+            PERMISSIONS_APP.add(Manifest.permission.RECORD_AUDIO);
+        }
+//        int permissionCaptureAudioOutput = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+//        if (permissionCaptureAudioOutput != PackageManager.PERMISSION_GRANTED) {
+//            PERMISSIONS_APP.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+//        }
+        if (!PERMISSIONS_APP.isEmpty()) {
+            String[] permArr = new String[PERMISSIONS_APP.size()];
+            PERMISSIONS_APP.toArray(permArr);
+            ActivityCompat.requestPermissions(
+                this.parent,
+                permArr,
+                0
+            );
+            return; //  false
+        }
+
+        return; //  true
     }
 
     private boolean checkStoragePermission() {
