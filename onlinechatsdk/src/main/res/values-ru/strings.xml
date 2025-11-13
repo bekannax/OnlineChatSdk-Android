@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">OnlineChatSdk</string>
+    <string name="dialog_loading_button_cancle_title">Отмена</string>
+    <string name="dialog_loading_title">Загрузка</string>
+</resources>

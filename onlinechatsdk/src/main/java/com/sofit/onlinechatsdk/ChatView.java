@@ -2,13 +2,14 @@ package com.sofit.onlinechatsdk;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.webkit.WebSettings;
@@ -20,6 +21,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class ChatView extends WebView implements ChatListener {
@@ -46,7 +49,7 @@ public class ChatView extends WebView implements ChatListener {
 
     public static final String logTag = "onlinechat.sdk";
 
-    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
+//    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
 
     private final String injectCssTemplate = "(function() {" +
         "var parent = document.getElementsByTagName('head').item(0);" +
@@ -84,7 +87,11 @@ public class ChatView extends WebView implements ChatListener {
     private boolean finished = false;
     private boolean destroyed = false;
 
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
+
+    private LoadingDialog loadingDialog;
+
+    private final CheckConnection checkConnection = new CheckConnection();
 
     private static JSONObject getUnreadedMessages(String startDate, String clientId, String token, Context context) {
         if (token.isEmpty()) {
@@ -240,19 +247,34 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void showLoading(Context context) {
-        if (this.progressDialog != null) {
+        if (this.loadingDialog != null) {
             return;
         }
-        this.progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        loadingDialog = new LoadingDialog(context);
+        loadingDialog.setOnCancelListener(this::closeSupport);
+        loadingDialog.show();
+
+//        if (this.progressDialog != null) {
+//            return;
+//        }
+//        this.progressDialog = new ProgressDialog(context);
+//        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "test", (dialog, which) -> {
+//            closeSupport();
+//        });
+//        progressDialog.show();
     }
 
     public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.hide();
-            progressDialog.dismiss();
-            progressDialog = null;
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
         }
+
+//        if (progressDialog != null) {
+//            progressDialog.hide();
+//            progressDialog.dismiss();
+//            progressDialog = null;
+//        }
     }
 
     public void closeSupport() {
@@ -265,6 +287,7 @@ public class ChatView extends WebView implements ChatListener {
                 activityLegacy.onCloseSupport();
             }
         }
+        checkConnection.close();
     }
 
     private String getCallJsMethod(String methodName, Object... params) {
@@ -282,7 +305,7 @@ public class ChatView extends WebView implements ChatListener {
                 } else if (p instanceof Command) {
                     builder.append(((Command)p).command);
                 } else {
-                    builder.append("'").append(p.toString()).append("'");
+                    builder.append("'").append(p).append("'");
                 }
             }
         }
@@ -321,6 +344,7 @@ public class ChatView extends WebView implements ChatListener {
         if (id == null || domain == null || id.isEmpty() || domain.isEmpty()) {
             return;
         }
+        showLoading(context);
         WebSettings webSettings = this.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -344,7 +368,16 @@ public class ChatView extends WebView implements ChatListener {
             this.chatChromeClient = null;
         }
 //        this.loadUrl("file:///android_asset/chat.html");
-        this.loadUrl( String.format(this.loadUrl, id, domain, this.getSetup(language, clientId, showCloseButton)) );
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String sLoadUrl = String.format("https://%s/support/chat/%s/%s%s", checkConnection.getDomain(), id, domain, this.getSetup(language, clientId, showCloseButton));
+            Log.d(ChatView.logTag, " loadUrl : " + sLoadUrl);
+
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            mainHandler.post(() -> {
+                this.loadUrl( sLoadUrl );
+            });
+        });
     }
 
     private ChatAppCompatActivity getChatActivityFromContext(Context context) {
