@@ -53,6 +53,12 @@ public class ChatChromeClient extends WebChromeClient {
 
 
     @Override
+    public void onPermissionRequestCanceled(PermissionRequest request) {
+        super.onPermissionRequestCanceled(request);
+        currentRequest = null;
+    }
+
+    @Override
     public void onPermissionRequest(PermissionRequest request) {
 //        super.onPermissionRequest(request);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -76,6 +82,30 @@ public class ChatChromeClient extends WebChromeClient {
         }
     }
 
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
+//        requestCode == 0 &&
+        if (currentRequest != null) {
+            boolean allGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+
+            if (allGranted) {
+                grantPermissions(currentRequest);
+            } else {
+                currentRequest.deny();
+            }
+            currentRequest = null;
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateCurrentRequest(PermissionRequest request) {
         for (String res: request.getResources()) {
@@ -89,18 +119,25 @@ public class ChatChromeClient extends WebChromeClient {
         if (this.parent == null) {
             return; //  false
         }
+
         List<String> PERMISSIONS_APP = new ArrayList<>();
-        int permissionCamera = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAMERA);
-        if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
-            PERMISSIONS_APP.add(Manifest.permission.CAMERA);
-            updateCurrentRequest(request);
-        }
-        int permissionRecordAudio = ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.RECORD_AUDIO);
-        if (permissionRecordAudio != PackageManager.PERMISSION_GRANTED) {
-            PERMISSIONS_APP.add(Manifest.permission.RECORD_AUDIO);
-            updateCurrentRequest(request);
+//        List<String> PERMISSIONS_APP = new ArrayList<>();
+        for (String res: request.getResources()) {
+            if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                if (ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    PERMISSIONS_APP.add(Manifest.permission.RECORD_AUDIO);
+                    updateCurrentRequest(request);
+                }
+            }
+            if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                if (ActivityCompat.checkSelfPermission(this.parent, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    PERMISSIONS_APP.add(Manifest.permission.CAMERA);
+                    updateCurrentRequest(request);
+                }
+            }
         }
         if (!PERMISSIONS_APP.isEmpty()) {
+//            Log.d(ChatView.logTag, "checkMediaPermission :: " + PERMISSIONS_APP.toString());
             String[] permArr = new String[PERMISSIONS_APP.size()];
             PERMISSIONS_APP.toArray(permArr);
             ActivityCompat.requestPermissions(
@@ -110,11 +147,37 @@ public class ChatChromeClient extends WebChromeClient {
             );
 //            return; //  false
         } else {
-            request.grant(request.getResources());
+            grantPermissions(request);
         }
 //        return; //  true
     }
+    private void grantPermissions(PermissionRequest request) {
+        List<String> grantedResources = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (String resource : request.getResources()) {
+                boolean granted = false;
+                switch (resource) {
+                    case PermissionRequest.RESOURCE_AUDIO_CAPTURE:
+                        granted = ActivityCompat.checkSelfPermission(this.parent,
+                                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+                        break;
+                    case PermissionRequest.RESOURCE_VIDEO_CAPTURE:
+                        granted = ActivityCompat.checkSelfPermission(this.parent,
+                                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+                        break;default:
+                        granted = true;
+                        break;
+                }
 
+                if (granted) {
+                    grantedResources.add(resource);
+                }
+            }
+            request.grant(grantedResources.toArray(new String[0]));
+        }
+    }
+
+    int inca = 0;
     private boolean checkStoragePermission() {
         if (this.parent == null) {
             return false;
@@ -160,7 +223,7 @@ public class ChatChromeClient extends WebChromeClient {
             ActivityCompat.requestPermissions(
                 this.parent,
                 permArr,
-                0
+                inca++
             );
             return false;
         }

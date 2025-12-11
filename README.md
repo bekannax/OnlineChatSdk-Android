@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.4.1'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.4.2'
     }
 }
 ```

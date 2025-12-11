@@ -12,6 +12,8 @@ public abstract class ChatAppCompatActivity extends AppCompatActivity implements
         new ActivityResultContracts.GetContent(),
         uri -> {
             getChatView().onReceiveValue(uri);
+
+//            getChatView().onRequestPermissionsResult();
             getChatView().onRequestPermissionsGranted();
         }
     );

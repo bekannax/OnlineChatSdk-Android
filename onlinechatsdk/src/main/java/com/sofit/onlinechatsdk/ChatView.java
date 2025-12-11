@@ -440,6 +440,15 @@ public class ChatView extends WebView implements ChatListener {
         chatChromeClient.onRequestPermissionsGranted();
     }
 
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
+        chatChromeClient.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
     public ChatView setDomain(String domain) {
         this.domain = domain;
         return this;

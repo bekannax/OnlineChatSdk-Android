@@ -2,7 +2,6 @@ package com.sofit.onlinechatsdk;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -46,14 +45,19 @@ public abstract class ChatActivity extends Activity implements ChatViewHelper {
         onDestroyChatView();
     }
 
+//    onPermissionRequestCan
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (this.chatView != null) {
-                this.chatView.onShowFileChooser();
-                this.chatView.onRequestPermissionsGranted();
-            }
+//        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            if (this.chatView != null) {
+//                this.chatView.onShowFileChooser();
+////                this.chatView.onRequestPermissionsGranted();
+//            }
+//        }
+        if (this.chatView != null) {
+            this.chatView.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
