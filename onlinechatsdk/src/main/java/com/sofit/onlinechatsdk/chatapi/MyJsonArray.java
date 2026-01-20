@@ -1,4 +1,4 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk.chatapi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,23 +20,23 @@ public class MyJsonArray extends JSONArray {
         return "";
     }
 
-    MyJsonObject GetJsonObject(int index) {
+    public MyJsonObject GetJsonObject(int index) {
         return MyJsonObject.create(GetString(index));
     }
 
-    MyJsonArray Put(MyJsonObject object) {
+    public MyJsonArray Put(MyJsonObject object) {
         this.put(object);
         return this;
     }
 
-    MyJsonArray Put(int index, MyJsonObject object) {
+    public MyJsonArray Put(int index, MyJsonObject object) {
         try {
             this.put(index, object);
         } catch (Exception e) {/**/}
         return this;
     }
 
-    static MyJsonArray create(){
+    public static MyJsonArray create(){
         try {
             return new MyJsonArray();
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class MyJsonArray extends JSONArray {
         }
     }
 
-    static MyJsonArray create(String json) {
+    public static MyJsonArray create(String json) {
         if (json == null || json.isEmpty())
             return MyJsonArray.create();
         try {

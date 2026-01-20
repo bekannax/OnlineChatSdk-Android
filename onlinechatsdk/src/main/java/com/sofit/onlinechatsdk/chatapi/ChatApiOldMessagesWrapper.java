@@ -1,13 +1,13 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk.chatapi;
 
-public class ChatApiMessagesWrapper {
+public class ChatApiOldMessagesWrapper {
 
     private MyJsonObject result;
     private MyJsonArray dataArray;
     private MyJsonObject data;
     private MyJsonArray messages;
 
-    ChatApiMessagesWrapper(MyJsonObject response) {
+    public ChatApiOldMessagesWrapper(MyJsonObject response) {
         this.result = response;
         this.dataArray = response.GetJsonArray("result");
         this.data = this.dataArray.GetJsonObject(0);

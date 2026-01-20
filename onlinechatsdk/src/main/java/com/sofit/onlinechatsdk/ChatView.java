@@ -15,6 +15,13 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.sofit.onlinechatsdk.chatapi.ChatApi;
+import com.sofit.onlinechatsdk.chatapi.ChatApiOld;
+import com.sofit.onlinechatsdk.chatapi.ChatApiOldMessagesWrapper;
+import com.sofit.onlinechatsdk.chatapi.MyJsonArray;
+import com.sofit.onlinechatsdk.chatapi.MyJsonObject;
+import com.sofit.onlinechatsdk.chatapi.models.ChatApiGetClientUnreadMessageCountResponseModel;
+
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -23,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import kotlin.Deprecated;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class ChatView extends WebView implements ChatListener {
@@ -93,6 +102,16 @@ public class ChatView extends WebView implements ChatListener {
 
     private final CheckConnection checkConnection = new CheckConnection();
 
+    public ChatView(Context context) {
+        this(context, null);
+        init(context);
+    }
+
+    public static ChatApiGetClientUnreadMessageCountResponseModel getUnreadMessagesCount(Context context) {
+        return (new ChatApi(context)).getClientUnreadMessageCount();
+    }
+
+    @Deprecated(message = "")
     private static JSONObject getUnreadedMessages(String startDate, String clientId, String token, Context context) {
         if (token.isEmpty()) {
             return MyJsonObject.create("{\"success\":false,\"error\":{\"code\":0,\"descr\":\"Не задан token\"}}");
@@ -111,7 +130,7 @@ public class ChatView extends WebView implements ChatListener {
         params.Put("status", "unreaded");
         params.Put("dateRange", dateRange);
 
-        ChatApiMessagesWrapper resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) new ChatApi().message(token, params) );
+        ChatApiOldMessagesWrapper resultWrapper = new ChatApiOldMessagesWrapper( (MyJsonObject) new ChatApiOld().message(token, params) );
         if (resultWrapper.getMessages().length() == 0) {
             return resultWrapper.getResult();
         }
@@ -131,25 +150,29 @@ public class ChatView extends WebView implements ChatListener {
         return resultWrapper.getResult();
     }
 
-    public static JSONObject getUnreadedMessages(Context context) {
-        return getUnreadedMessages( context, ChatConfig.getApiToken(context) );
-    }
+//    @Deprecated(message = "")
+//    public static JSONObject getUnreadedMessages(Context context) {
+//        return getUnreadedMessages( context, ChatConfig.getApiToken(context) );
+//    }
 
+    @Deprecated(message = "")
     public static JSONObject getUnreadedMessages(Context context, String token) {
         return getUnreadedMessages( ChatConfig.getClientId(context), token, context);
     }
 
+    @Deprecated(message = "")
     public static JSONObject getUnreadedMessages(String clientId, String token, Context context) {
         return getUnreadedMessages( (new ChatSimpleDateFormat()).format(new Date(System.currentTimeMillis() - 86400000 * 14)), clientId, token, context);
     }
 
+    @Deprecated(message = "")
     public static JSONObject getNewMessages(String clientId, String token, Context context) {
         String startDate = ChatConfig.getLastDateTimeNewMessage(context);
-        ChatApiMessagesWrapper resultWrapper;
+        ChatApiOldMessagesWrapper resultWrapper;
         if (startDate.isEmpty()) {
-            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(clientId, token, context) );
+            resultWrapper = new ChatApiOldMessagesWrapper( (MyJsonObject) getUnreadedMessages(clientId, token, context) );
         } else {
-            resultWrapper = new ChatApiMessagesWrapper( (MyJsonObject) getUnreadedMessages(startDate, clientId, token, context) );
+            resultWrapper = new ChatApiOldMessagesWrapper( (MyJsonObject) getUnreadedMessages(startDate, clientId, token, context) );
         }
         if (resultWrapper.getMessages().length() == 0) {
             ChatConfig.setLastDateTimeNewMessage( (new ChatSimpleDateFormat()).getCurrent() , context);
@@ -166,16 +189,19 @@ public class ChatView extends WebView implements ChatListener {
         return resultWrapper.getResult();
     }
 
-    public static JSONObject getNewMessages(Context context) {
-        return getNewMessages(context, ChatConfig.getApiToken(context));
-    }
+//    @Deprecated(message = "")
+//    public static JSONObject getNewMessages(Context context) {
+//        return getNewMessages(context, ChatConfig.getApiToken(context));
+//    }
 
+    @Deprecated(message = "")
     public static JSONObject getNewMessages(Context context, String token) {
         return getNewMessages(ChatConfig.getClientId(context), token, context);
     }
 
+    @Deprecated(message = "")
     public static JSONObject setInfoCustomDataValue(Context context, String token, String key, String value) {
-        return ChatApi.setInfo(
+        return ChatApiOld.setInfo(
             token,
             MyJsonObject.create().Put(
             "client", MyJsonObject.create()
@@ -186,14 +212,10 @@ public class ChatView extends WebView implements ChatListener {
 
     }
 
-    public static JSONObject setInfoCustomDataValue(Context context, String key, String value) {
-        return setInfoCustomDataValue(context, ChatConfig.getApiToken(context), key, value);
-    }
-
-    public ChatView(Context context) {
-        this(context, null);
-        init(context);
-    }
+//    @Deprecated(message = "")
+//    public static JSONObject setInfoCustomDataValue(Context context, String key, String value) {
+//        return setInfoCustomDataValue(context, ChatConfig.getApiToken(context), key, value);
+//    }
 
     public ChatView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
@@ -204,7 +226,8 @@ public class ChatView extends WebView implements ChatListener {
         super(context, attrs, defStyle);
         init(context);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChatView);
-        this.id = a.getString(R.styleable.ChatView_id);
+        setId(a.getString(R.styleable.ChatView_id));
+//        this.id = a.getString(R.styleable.ChatView_id);
         this.domain = a.getString(R.styleable.ChatView_domain);
         this.language = a.getString(R.styleable.ChatView_language);
         this.showCloseButton = a.getBoolean(R.styleable.ChatView_showCloseButton, true);
@@ -287,7 +310,7 @@ public class ChatView extends WebView implements ChatListener {
                 activityLegacy.onCloseSupport();
             }
         }
-        checkConnection.close();
+//        checkConnection.close();
     }
 
     private String getCallJsMethod(String methodName, Object... params) {
@@ -370,6 +393,8 @@ public class ChatView extends WebView implements ChatListener {
 //        this.loadUrl("file:///android_asset/chat.html");
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
+
+
             String sLoadUrl = String.format("https://%s/support/chat/%s/%s%s", checkConnection.getDomain(), id, domain, this.getSetup(language, clientId, showCloseButton));
             Log.d(ChatView.logTag, " loadUrl : " + sLoadUrl);
 
@@ -433,6 +458,7 @@ public class ChatView extends WebView implements ChatListener {
 
     public ChatView setId(String id) {
         this.id = id;
+        ChatConfig.setOrgId(id, this.context);
         return this;
     }
 
@@ -474,9 +500,10 @@ public class ChatView extends WebView implements ChatListener {
         return this;
     }
 
+    @Deprecated(message = "")
     public ChatView setApiToken(String apiToken) {
         this.apiToken = apiToken;
-        ChatConfig.setApiToken(this.apiToken, getContext());
+//        ChatConfig.setApiToken(this.apiToken, getContext());
         return this;
     }
 
@@ -496,10 +523,11 @@ public class ChatView extends WebView implements ChatListener {
         return this.clientId;
     }
 
+    @Deprecated(message = "")
     public String getApiToken() {
-        if (this.apiToken == null || this.apiToken.isEmpty()) {
-            this.apiToken = ChatConfig.getApiToken(getContext());
-        }
+//        if (this.apiToken == null || this.apiToken.isEmpty()) {
+//            this.apiToken = ChatConfig.getApiToken(getContext());
+//        }
         return this.apiToken;
     }
 
@@ -686,6 +714,7 @@ public class ChatView extends WebView implements ChatListener {
         if (destroyed) {
             return;
         }
+        Log.d(ChatView.logTag, "onEvent :: name : " + name + " :: data : " + data);
         if (!isFinished()) {
             setFinished(true);
             callJs();
@@ -727,6 +756,10 @@ public class ChatView extends WebView implements ChatListener {
                 if (!clientId.isEmpty()) {
                     ChatConfig.setClientId(clientId, getContext());
                 }
+                String siteId = MyJsonObject.create(data).GetString("siteId");
+                if (!siteId.isEmpty()) {
+                    ChatConfig.setSiteId(siteId, getContext());
+                }
                 break;
             case method_getContacts:
                 if (this.getContactsCallback != null) {
@@ -755,7 +788,7 @@ public class ChatView extends WebView implements ChatListener {
 //            this.chatWasOpenListener.onEvent("", "");
 //        }
 //    }
-//
+
 //    public void onChatWasClosed() {
 //        if (this.chatWasClosedListener != null) {
 //            this.chatWasClosedListener.onEvent("", "");

@@ -1,4 +1,4 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk.chatapi;
 
 import org.json.JSONObject;
 
@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class ChatApi {
+import kotlin.Deprecated;
+
+@Deprecated(message = "Use ChatApi")
+public class ChatApiOld {
 
     private Connection post(String url, String token, JSONObject params) {
         Map<String, String> headers = new HashMap<>();
@@ -22,6 +25,7 @@ public class ChatApi {
         return connection;
     }
 
+    // https://widget.apibcknd.com/comet/getClientUnreadMessageCount?orgId=593adecd804fc4e32e7e865d659f2356&siteId=747fo05s39hn1hwc0s0xdoacp5ei59ew&clientId=8f9565e45f8113418c44694dc06620f1
     public JSONObject send(String token, String method, JSONObject params) {
         Connection connection = this.post(String.format("https://admin.verbox.ru/json/v1.0/%s", method), token, params);
         if (connection == null) {
@@ -46,7 +50,7 @@ public class ChatApi {
 //    }
 
     public static JSONObject setInfo(String token, JSONObject params) {
-        return (new ChatApi()).clientSetInfo(token, params);
+        return (new ChatApiOld()).clientSetInfo(token, params);
     }
 
     public static JSONObject getNewMessages(String token, String clientId) {
@@ -61,7 +65,7 @@ public class ChatApi {
         params.Put("status", "unreaded");
         params.Put("dateRange", dateRange);
 
-        MyJsonObject result = (MyJsonObject) new ChatApi().message(token, params);
+        MyJsonObject result = (MyJsonObject) new ChatApiOld().message(token, params);
         MyJsonArray dataArray = result.GetJsonArray("data");
         MyJsonObject data = dataArray.GetJsonObject(0);
         MyJsonArray messages = data.GetJsonArray("messages");

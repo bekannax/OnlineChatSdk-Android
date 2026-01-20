@@ -10,7 +10,10 @@ import java.util.Map;
 public class ChatConfig {
 
     private static ChatConfig instance = null;
+
     private static final String configKeyApiToken = "apiToken";
+    private static final String configKeyOrgId = "orgId";
+    private static final String configKeySiteId = "siteId";
     private static final String configKeyClientId = "clientId";
     private static final String configKeyLastDateTimeNewMessage = "lastDateTimeNewMessage";
 
@@ -21,6 +24,7 @@ public class ChatConfig {
     private ChatConfig(Context context) {
         this.cache = new HashMap<>();
         this.config = context.getSharedPreferences(this.configKey, Context.MODE_PRIVATE);
+        setConfig(ChatConfig.configKeyApiToken, "");
     }
 
     private static ChatConfig getInstance(Context context) {
@@ -44,6 +48,22 @@ public class ChatConfig {
         return getInstance(context).getConfigString(ChatConfig.configKeyLastDateTimeNewMessage);
     }
 
+    public static String getOrgId(Context context) {
+        return getInstance(context).getConfigString(ChatConfig.configKeyOrgId);
+    }
+
+    public static void setOrgId(String orgId, Context context) {
+        getInstance(context).setConfig(ChatConfig.configKeyOrgId, orgId);
+    }
+
+    public static String getSiteId(Context context) {
+        return getInstance(context).getConfigString(ChatConfig.configKeySiteId);
+    }
+
+    public static void setSiteId(String clientId, Context context) {
+        getInstance(context).setConfig(ChatConfig.configKeySiteId, clientId);
+    }
+
     public static void setClientId(String clientId, Context context) {
         getInstance(context).setConfig(ChatConfig.configKeyClientId, clientId);
     }
@@ -52,13 +72,15 @@ public class ChatConfig {
         return getInstance(context).getConfigString(ChatConfig.configKeyClientId);
     }
 
-    public static void setApiToken(String token, Context context) {
-        getInstance(context).setConfig(ChatConfig.configKeyApiToken, token);
-    }
-
-    public static String getApiToken(Context context) {
-        return getInstance(context).getConfigString(ChatConfig.configKeyApiToken);
-    }
+//    @Deprecated(message = "")
+//    public static void setApiToken(String token, Context context) {
+//        getInstance(context).setConfig(ChatConfig.configKeyApiToken, token);
+//    }
+//
+//    @Deprecated(message = "")
+//    public static String getApiToken(Context context) {
+//        return getInstance(context).getConfigString(ChatConfig.configKeyApiToken);
+//    }
 
     private ChatConfig setConfig(Map<String, String> configs) {
         Iterator<Map.Entry<String, String>> entries = configs.entrySet().iterator();

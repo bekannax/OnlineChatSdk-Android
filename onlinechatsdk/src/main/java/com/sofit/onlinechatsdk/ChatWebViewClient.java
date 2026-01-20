@@ -13,6 +13,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.sofit.onlinechatsdk.chatapi.MyJsonObject;
+
 import androidx.annotation.RequiresApi;
 
 public class ChatWebViewClient extends WebViewClient {

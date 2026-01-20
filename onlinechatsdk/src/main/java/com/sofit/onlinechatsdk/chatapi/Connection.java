@@ -1,4 +1,4 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk.chatapi;
 
 import org.json.JSONObject;
 
@@ -22,7 +22,7 @@ public class Connection {
     private BufferedWriter writer;
     private boolean connected;
 
-    JSONObject jsonResponse;
+    public JSONObject jsonResponse;
 
     Connection(String url, Map<String, String> headers) {
         this.http = false;

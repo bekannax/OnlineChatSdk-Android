@@ -1,4 +1,4 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk.chatapi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,7 @@ public class MyJsonObject extends JSONObject {
         super(p_json);
     }
 
-    MyJsonObject Put(String key, Object obj){
+    public MyJsonObject Put(String key, Object obj){
         try{
             put(key, obj);
             return this;
@@ -35,14 +35,14 @@ public class MyJsonObject extends JSONObject {
         return "";
     }
 
-    boolean GetBoolean(String key, boolean defValue) {
+    public boolean GetBoolean(String key, boolean defValue) {
         try {
             return getBoolean(key);
         } catch (Exception e) {/**/}
         return defValue;
     }
 
-    MyJsonArray GetJsonArray(String key) {
+    public MyJsonArray GetJsonArray(String key) {
         return MyJsonArray.create(GetString(key));
     }
 
@@ -50,7 +50,7 @@ public class MyJsonObject extends JSONObject {
         return MyJsonObject.create(GetString(key));
     }
 
-    static MyJsonObject create(){
+    public static MyJsonObject create(){
         try {
             return new MyJsonObject();
         } catch (Exception e) {
