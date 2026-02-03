@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 35
+    compileSdk 36
     namespace 'com.sofit.onlinechatsdk'
     defaultConfig {
         minSdkVersion 19
 //        minSdkVersion 21
-        versionCode 43
-        versionName '0.4.3'
+        versionCode 44
+        versionName '0.4.4'
     }
 //    viewBinding {
 //        enabled = true

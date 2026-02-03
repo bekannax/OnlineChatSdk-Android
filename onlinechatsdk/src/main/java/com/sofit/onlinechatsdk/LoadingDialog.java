@@ -3,15 +3,14 @@ package com.sofit.onlinechatsdk;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
 public class LoadingDialog extends Dialog {
 
-//    private String message;
+    private final boolean isShowCancelButton;
     private OnCancelListener onCancelListener;
-    private Button cancelButton;
-//    private TextView messageTextView;
 
     public interface OnCancelListener {
         void onCancel();
@@ -19,18 +18,13 @@ public class LoadingDialog extends Dialog {
 
     public LoadingDialog(Context context) {
         super(context);
-//        this.message = context.getString(R.string.dialog_loading_title) + "...";
+        this.isShowCancelButton = true;
     }
 
-//    public LoadingDialog(Context context, String message) {
-//        super(context);
-//        this.message = message;
-//    }
-
-//    public LoadingDialog(Context context, int themeResId) {
-//        super(context, themeResId);
-////        this.message = "Загрузка...";
-//    }
+    public LoadingDialog(Context context, boolean isShowCancelButton) {
+        super(context);
+        this.isShowCancelButton = isShowCancelButton;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +36,22 @@ public class LoadingDialog extends Dialog {
         setCancelable(false);
         setCanceledOnTouchOutside(false);
 
-//        messageTextView = findViewById(R.id.tv_message);
-        cancelButton = findViewById(R.id.btn_cancel);
-
-//        messageTextView.setText(message);
-
+        Button cancelButton = findViewById(R.id.btn_cancel);
+        if (cancelButton != null) {
+            if (isShowCancelButton) {
+                cancelButton.setVisibility(View.VISIBLE);
+            } else {
+                cancelButton.setVisibility(View.GONE);
+            }
+        }
         cancelButton.setOnClickListener(v -> {
             if (onCancelListener != null) {
                 onCancelListener.onCancel();
             }
             dismiss();
         });
-    }
 
-//    public void setMessage(String message) {
-//        this.message = message;
-//        if (messageTextView != null) {
-//            messageTextView.setText(message);
-//        }
-//    }
+    }
 
     public void setOnCancelListener(OnCancelListener listener) {
         this.onCancelListener = listener;

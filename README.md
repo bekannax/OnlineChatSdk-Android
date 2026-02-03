@@ -29,6 +29,7 @@ buildscript {
         app:id="<Ваш id>"
         app:domain="<Домен вашего сайта>"
         app:showCloseButton="true"
+        app:showLoaderCloseButton="true"
         app:autoLoad="true" />
 </android.support.constraint.ConstraintLayout>
  ```

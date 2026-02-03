@@ -93,6 +93,7 @@ public class ChatView extends WebView implements ChatListener {
     private Context context;
     private ChatChromeClient chatChromeClient;
     private List<String> callJs;
+    private boolean isLoaderShowCancelButton = true;
     private boolean finished = false;
     private boolean destroyed = false;
 
@@ -104,6 +105,12 @@ public class ChatView extends WebView implements ChatListener {
 
     public ChatView(Context context) {
         this(context, null);
+        init(context);
+    }
+
+    public ChatView(Context context, boolean isLoaderShowCancelButton) {
+        this(context, null);
+        setShowLoaderCancelButton(isLoaderShowCancelButton);
         init(context);
     }
 
@@ -212,11 +219,6 @@ public class ChatView extends WebView implements ChatListener {
 
     }
 
-//    @Deprecated(message = "")
-//    public static JSONObject setInfoCustomDataValue(Context context, String key, String value) {
-//        return setInfoCustomDataValue(context, ChatConfig.getApiToken(context), key, value);
-//    }
-
     public ChatView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
         init(context);
@@ -224,10 +226,10 @@ public class ChatView extends WebView implements ChatListener {
 
     public ChatView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChatView);
+        setShowLoaderCancelButton(a.getBoolean(R.styleable.ChatView_showLoaderCloseButton, true));
+        init(context);
         setId(a.getString(R.styleable.ChatView_id));
-//        this.id = a.getString(R.styleable.ChatView_id);
         this.domain = a.getString(R.styleable.ChatView_domain);
         this.language = a.getString(R.styleable.ChatView_language);
         this.showCloseButton = a.getBoolean(R.styleable.ChatView_showCloseButton, true);
@@ -239,7 +241,7 @@ public class ChatView extends WebView implements ChatListener {
 
     private void init(Context context) {
         this.context = context;
-        showLoading(context);
+//        showLoading(context, isLoaderShowCancelButton);
         setChatView(context);
     }
 
@@ -270,21 +272,16 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void showLoading(Context context) {
+        showLoading(context, true);
+    }
+
+    public void showLoading(Context context, boolean isShowCancelButton) {
         if (this.loadingDialog != null) {
             return;
         }
-        loadingDialog = new LoadingDialog(context);
+        loadingDialog = new LoadingDialog(context, isShowCancelButton);
         loadingDialog.setOnCancelListener(this::closeSupport);
         loadingDialog.show();
-
-//        if (this.progressDialog != null) {
-//            return;
-//        }
-//        this.progressDialog = new ProgressDialog(context);
-//        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "test", (dialog, which) -> {
-//            closeSupport();
-//        });
-//        progressDialog.show();
     }
 
     public void hideLoading() {
@@ -292,12 +289,6 @@ public class ChatView extends WebView implements ChatListener {
             loadingDialog.dismiss();
             loadingDialog = null;
         }
-
-//        if (progressDialog != null) {
-//            progressDialog.hide();
-//            progressDialog.dismiss();
-//            progressDialog = null;
-//        }
     }
 
     public void closeSupport() {
@@ -363,11 +354,18 @@ public class ChatView extends WebView implements ChatListener {
         return setup.toString();
     }
 
-    private void load(String id, String domain, String language, String clientId, Boolean showCloseButton) {
+    private void load(
+        String id,
+        String domain,
+        String language,
+        String clientId,
+        Boolean showCloseButton,
+        Boolean showLoaderCloseButton
+    ) {
         if (id == null || domain == null || id.isEmpty() || domain.isEmpty()) {
             return;
         }
-        showLoading(context);
+        showLoading(context, showLoaderCloseButton);
         WebSettings webSettings = this.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -448,17 +446,22 @@ public class ChatView extends WebView implements ChatListener {
     }
 
     public void load() {
-        this.load(this.id, this.domain, this.language, this.clientId, this.showCloseButton);
+        this.load(this.id, this.domain, this.language, this.clientId, this.showCloseButton, this.isLoaderShowCancelButton);
     }
 
     public void load(String css) {
         this.setCss(css);
-        this.load(this.id, this.domain, this.language, this.clientId, this.showCloseButton);
+        this.load(this.id, this.domain, this.language, this.clientId, this.showCloseButton, this.isLoaderShowCancelButton);
     }
 
     public ChatView setId(String id) {
         this.id = id;
         ChatConfig.setOrgId(id, this.context);
+        return this;
+    }
+
+    public ChatView setShowLoaderCancelButton(boolean value) {
+        this.isLoaderShowCancelButton = value;
         return this;
     }
 
