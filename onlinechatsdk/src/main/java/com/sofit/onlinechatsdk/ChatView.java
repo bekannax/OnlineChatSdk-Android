@@ -46,6 +46,7 @@ public class ChatView extends WebView implements ChatListener {
     public static final String event_closeSupport = "closeSupport";
 
     public static final String method_setClientInfo = "setClientInfo";
+    public static final String method_setClientTags = "setClientTags";
     public static final String method_setTarget = "setTarget";
     public static final String method_openReviewsTab = "openReviewsTab";
     public static final String method_openTab = "openTab";
@@ -583,6 +584,28 @@ public class ChatView extends WebView implements ChatListener {
 
     public void callJsSetClientInfo(String jsonInfo) {
         this.callJsMethod(method_setClientInfo, new Command(jsonInfo));
+    }
+
+    public void callJsSetClientTags(List<String> toAdd, List<String> toRemove, boolean isRemoveAllCurrentTags) {
+        MyJsonObject params = MyJsonObject.create();
+        if (toAdd != null && !toAdd.isEmpty()) {
+            MyJsonArray arr = MyJsonArray.create();
+            for (String add: toAdd) {
+                arr.put(add);
+            }
+            params.Put("toAdd", arr);
+        }
+        if (toRemove != null && !toRemove.isEmpty()) {
+            MyJsonArray arr = MyJsonArray.create();
+            for (String remove: toRemove) {
+                arr.put(remove);
+            }
+            params.Put("toRemove", arr);
+        }
+        if (isRemoveAllCurrentTags) {
+            params.Put("isRemoveAllCurrentTags", true);
+        }
+        this.callJsMethod(method_setClientTags, new Command(params.toString()));
     }
 
     public void callJsSetTarget(String reason) {

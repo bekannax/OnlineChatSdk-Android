@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.4.3'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.4.5'
     }
 }
 ```
@@ -134,6 +134,7 @@ chatView.setListener(new ChatListener() {
 
 ## Методы
  * **setClientInfo** - изменение информации о посетителе.
+ * **setClientTags** - изменение тэгов посетителя.
  * **setTarget** - пометить посетителя целевым.
  * **openReviewsTab** - отобразить форму для отзыва.
  * **openTab** - отобразить необходимую вкладку.
@@ -144,6 +145,8 @@ chatView.setListener(new ChatListener() {
 
 ```java
 chatView.callJsSetClientInfo("{name: \"Имя\", email: \"test@mail.ru\"}");
+
+chatView.callJsSetClientTags(toAdd: List<String>, toRemove: List<String>, isRemoveAllCurrentTags: boolean);
 
 chatView.callJsSetTarget("reason");
 
