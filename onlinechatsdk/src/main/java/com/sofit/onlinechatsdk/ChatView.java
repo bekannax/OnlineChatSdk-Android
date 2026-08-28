@@ -394,7 +394,7 @@ public class ChatView extends WebView implements ChatListener {
         executor.execute(() -> {
 
 
-            String sLoadUrl = String.format("https://%s/support/chat/%s/%s%s", checkConnection.getDomain(), id, domain, this.getSetup(language, clientId, showCloseButton));
+            String sLoadUrl = String.format("https://%s/json/anonymous/online/sdk/%s/%s%s", checkConnection.getDomain(), id, domain, this.getSetup(language, clientId, showCloseButton));
             Log.d(ChatView.logTag, " loadUrl : " + sLoadUrl);
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
