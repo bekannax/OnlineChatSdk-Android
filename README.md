@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.4.6'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.4.7'
     }
 }
 ```
@@ -177,45 +177,3 @@ chatView.callJsGetContacts(new ChatListener() {
 Если при запросе произошел сбой, то в **error** будет передан `ChatApiResponseErrorModel` с описанием ошибки.
 
 ##
-
-[//]: # (## Получение token)
-[//]: # (Перейдите в раздел «Интеграция и API - REST API», скопируйте существующий token или добавьте новый.)
-[//]: # (![]&#40;https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2019-04-01_18-32-22.png?raw=true&#41;)
-
-[//]: # (## Получение новых сообщений от оператора)
-
-[//]: # (Для получения новых сообщений, в `ChatView` есть два статичных метода **getUnreadedMessages** и **getNewMessages**.)
-
-[//]: # ()
-[//]: # (**getUnreadedMessages** - возвращает все непрочитанные сообщения.)
-
-[//]: # ()
-[//]: # (**getNewMessages** работает аналогичным образом, но при повторном запросе предыдущие сообщения уже не возвращаются.)
-
-[//]: # (Перед использование методов, нужно указать `apiToken`.)
-
-[//]: # ()
-[//]: # ()
-[//]: # (Это можно сделать в коде)
-
-[//]: # (```java)
-
-[//]: # (chatView.setApiToken&#40;"<apiToken>"&#41;;)
-
-[//]: # (```)
-
-[//]: # (```java)
-
-[//]: # (JSONObject data = ChatView.getUnreadedMessages&#40;Context context&#41;;)
-
-[//]: # (JSONObject data = ChatView.getNewMessages&#40;Context context&#41;;)
-
-[//]: # (```)
-
-[//]: # (Формат `data` аналогичен ответу метода /chat/message/getList в Rest Api.)
-
-[//]: # ()
-[//]: # (Подробное описание можно прочесть в разделе «Интеграция и API - REST API - Инструкции по подключению».)
-
-[//]: # ()
-[//]: # (![]&#40;https://github.com/bekannax/OnlineChatSdk-Android/blob/master/images/2020-08-14_19-05-48.png?raw=true&#41;)

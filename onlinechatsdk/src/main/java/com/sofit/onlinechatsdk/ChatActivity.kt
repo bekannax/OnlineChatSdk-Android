@@ -1,102 +1,96 @@
-package com.sofit.onlinechatsdk;
+package com.sofit.onlinechatsdk
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
-import androidx.annotation.NonNull;
+abstract class ChatActivity : Activity(), ChatViewHelper {
 
-public abstract class ChatActivity extends Activity implements ChatViewHelper {
+    private var chatView: ChatView? = null
 
-    private ChatView chatView;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                if (this.chatView != null) {
-                    this.chatView.onReceiveValue(uri);
-                    return;
+            val uri: Uri? = data?.data
+            if (uri != null) {
+                chatView?.let {
+                    it.onReceiveValue(uri)
+                    return
                 }
             }
         }
-        if (this.chatView != null) {
-            this.chatView.onReceiveValue(null);
+        chatView?.onReceiveValue(null)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val keyboardHeight = imeInsets.bottom
+            val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val systemBars = insets.getInsets(  WindowInsetsCompat.Type.systemBars())
+            val bottom = if (isKeyboardVisible) {
+                keyboardHeight
+            } else {
+                systemBars.bottom
+            }
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, bottom)
+            insets
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        onChatWasOpen();
+    override fun onResume() {
+        super.onResume()
+        onChatWasOpen()
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        onChatWasClosed();
+    override fun onStop() {
+        super.onStop()
+        onChatWasClosed()
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        onDestroyChatView();
+    override fun onDestroy() {
+        super.onDestroy()
+        onDestroyChatView()
     }
 
-//    onPermissionRequestCan
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        chatView?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            if (this.chatView != null) {
-//                this.chatView.onShowFileChooser();
-////                this.chatView.onRequestPermissionsGranted();
-//            }
-//        }
-        if (this.chatView != null) {
-            this.chatView.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    override fun onLinkPressed(link: String?) {
+        chatView?.openLink(link)
+    }
+
+    override fun onCloseSupport() {
+        finish()
+    }
+
+    override fun setChatView(chatView: ChatView?) {
+        this.chatView = chatView
+    }
+
+    override fun getChatView(): ChatView? {
+        return this.chatView
+    }
+
+    override fun setChatViewById(id: Int) {
+        val findChatView = findViewById<ChatView>(id)
+        findChatView?.let {
+            setChatView(it)
         }
     }
 
-    @Override
-    public void onLinkPressed(String link) {
-        ChatView chat = getChatView();
-        if (chat != null) {
-            chat.openLink(link);
-        }
-    }
-
-    @Override
-    public void onCloseSupport() {
-        finish();
-    }
-
-    @Override
-    public void setChatView(ChatView chatView) {
-        this.chatView = chatView;
-    }
-
-    @Override
-    public ChatView getChatView() {
-        return this.chatView;
-    }
-
-    @Override
-    public void setChatViewById(int id) {
-        ChatView findChatView = findViewById(id);
-        if (findChatView != null) {
-            setChatView(findChatView);
-        }
-    }
-
-    @Override
-    public void onDestroyChatView() {
-        if (chatView != null) {
-            chatView.destroy();
-            chatView = null;
-        }
+    override fun onDestroyChatView() {
+        chatView?.destroy()
+        chatView = null
     }
 }

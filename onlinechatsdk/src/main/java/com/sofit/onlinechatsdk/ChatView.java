@@ -59,8 +59,6 @@ public class ChatView extends WebView implements ChatListener {
 
     public static final String logTag = "onlinechat.sdk";
 
-//    final String loadUrl = "https://admin.verbox.ru/support/chat/%s/%s%s";
-
     private final String injectCssTemplate = "(function() {" +
         "var parent = document.getElementsByTagName('head').item(0);" +
         "var style = document.createElement('style');" +
@@ -392,13 +390,11 @@ public class ChatView extends WebView implements ChatListener {
 //        this.loadUrl("file:///android_asset/chat.html");
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-
-
             String sLoadUrl = String.format("https://%s/json/anonymous/online/sdk/%s/%s%s", checkConnection.getDomain(), id, domain, this.getSetup(language, clientId, showCloseButton));
-            Log.d(ChatView.logTag, " loadUrl : " + sLoadUrl);
-
+            Log.d(ChatView.logTag, " loadUrl : 1 : " + sLoadUrl);
             Handler mainHandler = new Handler(Looper.getMainLooper());
             mainHandler.post(() -> {
+                Log.d(ChatView.logTag, " loadUrl : 2 : " + sLoadUrl);
                 this.loadUrl( sLoadUrl );
             });
         });
@@ -778,6 +774,7 @@ public class ChatView extends WebView implements ChatListener {
                 if (this.clientIdListener != null) {
                     this.clientIdListener.onEvent(name, data);
                 }
+                Log.d(ChatView.logTag, " ---------------------------------- data : " + data);
                 String clientId = MyJsonObject.create(data).GetString("clientId");
                 if (!clientId.isEmpty()) {
                     ChatConfig.setClientId(clientId, getContext());

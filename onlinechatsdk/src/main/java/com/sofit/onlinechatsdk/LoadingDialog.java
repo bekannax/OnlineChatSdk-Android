@@ -32,7 +32,6 @@ public class LoadingDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_loading);
 
-        // Запрещаем закрытие диалога при клике вне его
         setCancelable(false);
         setCanceledOnTouchOutside(false);
 
