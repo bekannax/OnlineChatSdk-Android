@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-abstract class ChatActivity : Activity(), ChatViewHelper {
+public abstract class ChatActivity : Activity(), ChatViewHelper {
 
     private var chatView: ChatView? = null
 
@@ -31,7 +31,7 @@ abstract class ChatActivity : Activity(), ChatViewHelper {
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             val keyboardHeight = imeInsets.bottom
             val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-            val systemBars = insets.getInsets(  WindowInsetsCompat.Type.systemBars())
+            val systemBars = insets.getInsets(  WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
             val bottom = if (isKeyboardVisible) {
                 keyboardHeight
             } else {

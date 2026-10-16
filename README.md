@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.bekannax:OnlineChatSdk:0.4.7'
+        implementation 'com.github.bekannax:OnlineChatSdk:0.5.2'
     }
 }
 ```
@@ -18,7 +18,7 @@ buildscript {
 ## Пример использования
 Создайте `layout` с нашим `ChatView`. Создайте `Activity`, которая наследует `ChatActivity`.
 ```xml
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <com.sofit.onlinechatsdk.ChatView
@@ -31,11 +31,11 @@ buildscript {
         app:showCloseButton="true"
         app:showLoaderCloseButton="true"
         app:autoLoad="true" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
  ```
 Если `autoLoad = true`, то при запуске `Activity` виджет автоматически загрузится, если `autoLoad = false`, то нужно использовать функцию **load()**.
 ```java
-public class MyActivity extends ChatActivity {
+public class MyActivity extends ChatAppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

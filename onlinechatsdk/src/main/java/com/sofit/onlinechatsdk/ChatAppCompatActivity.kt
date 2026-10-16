@@ -3,13 +3,14 @@ package com.sofit.onlinechatsdk
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-abstract class ChatAppCompatActivity : AppCompatActivity(), ChatViewHelper {
+public abstract class ChatAppCompatActivity : AppCompatActivity(), ChatViewHelper {
 
     private var chatView: ChatView? = null
 
@@ -22,16 +23,18 @@ abstract class ChatAppCompatActivity : AppCompatActivity(), ChatViewHelper {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
             val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
             val keyboardHeight = imeInsets.bottom
             val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-            val systemBars = insets.getInsets(  WindowInsetsCompat.Type.systemBars())
+            val systemBars = insets.getInsets(  WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
             val bottom = if (isKeyboardVisible) {
                 keyboardHeight
             } else {
                 systemBars.bottom
             }
+//            Log.d(ChatView.logTag, "--------------- onCreate ---------- setOnApplyWindowInsetsListener --- left=${systemBars.left} : right=${systemBars.right}")
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, bottom)
             insets
         }
